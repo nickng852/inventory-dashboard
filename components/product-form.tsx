@@ -218,7 +218,7 @@ export default function ProductForm({
                                                     }
                                                 >
                                                     <div
-                                                        className="absolute right-0 top-12"
+                                                        className="absolute -top-80 right-0 md:top-12"
                                                         onClick={(e) => {
                                                             e.preventDefault()
                                                             e.stopPropagation()
@@ -293,6 +293,7 @@ export default function ProductForm({
 
                         <Button
                             type="submit"
+                            className="w-full md:w-auto"
                             disabled={form.formState.isSubmitting}
                         >
                             {form.formState.isSubmitting && (

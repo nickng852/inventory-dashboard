@@ -8,7 +8,7 @@ export default function Page() {
     if (userId)
         return (
             <main>
-                <div className="flex flex-col items-center p-8">
+                <div className="flex flex-col items-center p-6 md:p-8">
                     <ProductForm userId={userId} />
                 </div>
             </main>
