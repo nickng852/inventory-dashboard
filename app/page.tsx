@@ -10,7 +10,7 @@ export default function Home() {
 
     if (userId)
         return (
-            <main className="h-full flex-1 flex-col items-center p-6 md:flex md:p-8">
+            <main className="h-full flex-1 flex-col items-center p-6 md:flex md:p-10">
                 <div className="w-full max-w-4xl space-y-6 md:space-y-8">
                     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                         <div>

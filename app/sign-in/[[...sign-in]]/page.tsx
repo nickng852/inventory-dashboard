@@ -7,7 +7,7 @@ export default function Page() {
     const { resolvedTheme } = useTheme()
 
     return (
-        <div className="flex h-screen items-center justify-center">
+        <div className="flex flex-col items-center p-6 md:p-10">
             <SignIn
                 appearance={{
                     baseTheme: resolvedTheme === 'dark' ? dark : undefined,

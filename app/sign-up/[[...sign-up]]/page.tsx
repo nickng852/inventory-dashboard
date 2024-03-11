@@ -7,7 +7,7 @@ export default function Page() {
     const { resolvedTheme } = useTheme()
 
     return (
-        <div className="flex items-center justify-center p-10">
+        <div className="flex flex-col items-center p-6 md:p-10">
             <SignUp
                 appearance={{
                     baseTheme: resolvedTheme === 'dark' ? dark : undefined,
