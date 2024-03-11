@@ -1,0 +1,138 @@
+'use client'
+import { ArrowUpDown } from 'lucide-react'
+import moment from 'moment'
+import Image from 'next/image'
+import { numericFormatter } from 'react-number-format'
+import { ColumnDef } from '@tanstack/react-table'
+
+import DataTableActions from './data-table-actions'
+
+export type Product = {
+    id: string
+    createdAt: Date
+    updatedAt: Date
+    name: string
+    description?: string | null | undefined
+    price: string | number
+    color?: string | null | undefined
+    imageUrl?: string | null | undefined
+    userId: string
+}
+
+const SortableHeader = ({
+    headerName,
+    onClick,
+}: {
+    headerName: string
+    onClick: () => void
+}) => {
+    return (
+        <div className="flex cursor-pointer items-center" onClick={onClick}>
+            {headerName}
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+        </div>
+    )
+}
+
+export const columns: ColumnDef<Product>[] = [
+    {
+        accessorKey: 'color',
+        header: 'Color',
+        cell: ({ row }) => {
+            if (row.original.color)
+                return (
+                    <div
+                        style={{ backgroundColor: row.original.color }}
+                        className="ml-2 h-4 w-4 rounded-full"
+                    ></div>
+                )
+        },
+    },
+    {
+        accessorKey: 'name',
+        header: ({ column }) => {
+            return (
+                <SortableHeader
+                    headerName="Name"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === 'asc')
+                    }
+                />
+            )
+        },
+    },
+    {
+        accessorKey: 'price',
+        accessorFn: (originalRow) => Number(originalRow.price),
+        header: ({ column }) => {
+            return (
+                <SortableHeader
+                    headerName="Price"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === 'asc')
+                    }
+                />
+            )
+        },
+        cell: ({ row }) =>
+            numericFormatter(row.original.price.toString(), {
+                prefix: '$',
+                thousandSeparator: true,
+            }),
+    },
+    {
+        accessorKey: 'image',
+        header: 'Image',
+        cell: ({ row }) => {
+            if (row.original.imageUrl)
+                return (
+                    <div className="h-[35px] w-[55px]">
+                        <Image
+                            src={row.original.imageUrl}
+                            alt={row.original.name}
+                            className="h-full w-full rounded-md object-cover"
+                            width={50}
+                            height={50}
+                            priority
+                            placeholder="blur"
+                            blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mO8dPVqPQAH+gL9EC8KowAAAABJRU5ErkJggg=="
+                        />
+                    </div>
+                )
+        },
+    },
+    {
+        accessorKey: 'createdAt',
+        header: ({ column }) => {
+            return (
+                <SortableHeader
+                    headerName="Created At"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === 'asc')
+                    }
+                />
+            )
+        },
+        cell: ({ row }) => moment(row.original.createdAt).format('Y-M-D'),
+    },
+    {
+        accessorKey: 'updatedAt',
+        header: ({ column }) => {
+            return (
+                <SortableHeader
+                    headerName="Updated At"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === 'asc')
+                    }
+                />
+            )
+        },
+        cell: ({ row }) => moment(row.original.updatedAt).format('Y-M-D'),
+    },
+    {
+        id: 'actions',
+        cell: ({ row }) => {
+            return <DataTableActions productId={row.original.id} />
+        },
+    },
+]
