@@ -168,7 +168,6 @@ export default function ProductForm({
                                         prefix={'$'}
                                         thousandSeparator={true}
                                         customInput={Input}
-                                        {...fieldValues}
                                     />
                                     <FormMessage />
                                 </FormItem>
