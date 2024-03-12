@@ -168,6 +168,7 @@ export default function ProductForm({
                                         prefix={'$'}
                                         thousandSeparator={true}
                                         customInput={Input}
+                                        placeholder="Enter Product Price"
                                     />
                                     <FormMessage />
                                 </FormItem>
