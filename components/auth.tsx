@@ -1,3 +1,5 @@
+'use client'
+import { useTheme } from 'next-themes'
 import {
     SignedIn,
     SignedOut,
@@ -5,14 +7,31 @@ import {
     SignInButton,
     UserButton,
 } from '@clerk/nextjs'
+import { dark } from '@clerk/themes'
 
 import { Button } from '@/components/ui/button'
 
 export default function Auth() {
+    const { resolvedTheme } = useTheme()
+
     return (
         <>
             <SignedIn>
-                <UserButton afterSignOutUrl="/" />
+                <UserButton
+                    afterSignOutUrl="/"
+                    appearance={{
+                        baseTheme: resolvedTheme === 'dark' ? dark : undefined,
+                    }}
+                    userProfileProps={{
+                        appearance: {
+                            baseTheme:
+                                resolvedTheme === 'dark' ? dark : undefined,
+                            variables: {
+                                colorPrimary: '#71717a',
+                            },
+                        },
+                    }}
+                />
             </SignedIn>
             <SignedOut>
                 <div className="space-x-2">
