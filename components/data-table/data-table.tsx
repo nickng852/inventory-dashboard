@@ -26,15 +26,15 @@ import {
     DropdownMenuCheckboxItem,
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from '@/components/ui/pagination'
+// import {
+//     Pagination,
+//     PaginationContent,
+//     PaginationEllipsis,
+//     PaginationItem,
+//     PaginationLink,
+//     PaginationNext,
+//     PaginationPrevious,
+// } from '@/components/ui/pagination'
 import {
     Table,
     TableBody,
@@ -43,6 +43,8 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table'
+
+import { DataTablePagination } from './data-table-pagination'
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -183,7 +185,7 @@ export function DataTable<TData, TValue>({
                 </Table>
             </div>
 
-            <Pagination>
+            {/* <Pagination>
                 <PaginationContent>
                     <PaginationItem
                         onClick={() => {
@@ -239,7 +241,9 @@ export function DataTable<TData, TValue>({
                         />
                     </PaginationItem>
                 </PaginationContent>
-            </Pagination>
+            </Pagination> */}
+
+            <DataTablePagination table={table} />
         </div>
     )
 }

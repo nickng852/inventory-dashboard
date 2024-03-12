@@ -106,7 +106,7 @@ export const columns: ColumnDef<Product>[] = [
         header: ({ column }) => {
             return (
                 <SortableHeader
-                    headerName="Created At"
+                    headerName="Created"
                     onClick={() =>
                         column.toggleSorting(column.getIsSorted() === 'asc')
                     }
@@ -120,7 +120,7 @@ export const columns: ColumnDef<Product>[] = [
         header: ({ column }) => {
             return (
                 <SortableHeader
-                    headerName="Updated At"
+                    headerName="Updated"
                     onClick={() =>
                         column.toggleSorting(column.getIsSorted() === 'asc')
                     }
