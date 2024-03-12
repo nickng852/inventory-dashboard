@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import _ from 'lodash'
+import { useRouter } from 'next/navigation'
 import { MixerHorizontalIcon } from '@radix-ui/react-icons'
 import {
     ColumnDef,
@@ -44,17 +45,19 @@ import {
     TableRow,
 } from '@/components/ui/table'
 
+import { Product } from './columns'
 import { DataTablePagination } from './data-table-pagination'
 
 interface DataTableProps<TData, TValue> {
-    columns: ColumnDef<TData, TValue>[]
-    data: TData[]
+    columns: ColumnDef<Product, TValue>[]
+    data: Product[]
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
 }: DataTableProps<TData, TValue>) {
+    const router = useRouter()
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
         {}
@@ -160,6 +163,11 @@ export function DataTable<TData, TValue>({
                                     data-state={
                                         row.getIsSelected() && 'selected'
                                     }
+                                    onDoubleClick={() => {
+                                        router.push(
+                                            `/product/${row.original?.id}/edit`
+                                        )
+                                    }}
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
