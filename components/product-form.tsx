@@ -44,7 +44,7 @@ export default function ProductForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: data ? data.name : '',
-            description: data ? (data.description as string) : '',
+            description: data ? data.description ?? '' : '',
             price: data ? (data.price as string) : '',
             color: data ? (data.color as string) : '',
             image: undefined,
