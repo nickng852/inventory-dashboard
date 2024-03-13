@@ -1,7 +1,6 @@
 import { MoreHorizontal } from 'lucide-react'
 import Link from 'next/link'
 
-import { deleteProduct } from '@/app/action'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -21,6 +20,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useToast } from '@/components/ui/use-toast'
+import { deleteProduct } from '@/lib/products/action'
 
 export default function DataTableActions({ productId }: { productId: string }) {
     const { toast } = useToast()

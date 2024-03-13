@@ -34,8 +34,8 @@ export const createProduct = async (userId: string, formData: FormData) => {
         },
     })
 
-    revalidatePath('/')
-    redirect('/')
+    revalidatePath('/products')
+    redirect('/products')
 }
 
 export const editProduct = async (productId: string, formData: FormData) => {
@@ -66,8 +66,8 @@ export const editProduct = async (productId: string, formData: FormData) => {
         },
     })
 
-    revalidatePath('/')
-    redirect('/')
+    revalidatePath('/products')
+    redirect('/products')
 }
 
 export const deleteProduct = async (productId: string) => {
@@ -75,7 +75,7 @@ export const deleteProduct = async (productId: string) => {
         where: { id: productId },
     })
 
-    revalidatePath('/')
+    revalidatePath('/products')
 }
 
 export const fetchProductsByUserId = async (userId: string) => {
@@ -83,7 +83,7 @@ export const fetchProductsByUserId = async (userId: string) => {
         where: { userId: userId },
     })
 
-    revalidatePath('/')
+    revalidatePath('/products')
 
     return data
 }
@@ -93,7 +93,7 @@ export const fetchProductByProductId = async (productId: string) => {
         where: { id: productId },
     })
 
-    revalidatePath('/')
+    revalidatePath('/products')
 
     return data
 }

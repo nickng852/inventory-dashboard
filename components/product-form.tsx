@@ -10,7 +10,6 @@ import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ReloadIcon } from '@radix-ui/react-icons'
 
-import { createProduct, editProduct } from '@/app/action'
 import { Button } from '@/components/ui/button'
 import {
     Form,
@@ -24,6 +23,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/components/ui/use-toast'
 import { formSchema } from '@/lib/formSchema'
+import { createProduct, editProduct } from '@/lib/products/action'
 
 import { Product } from './data-table/columns'
 

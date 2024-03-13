@@ -36,8 +36,8 @@ export default function RootLayout({
                     >
                         <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
                             {userId && (
-                                <div className="w-full flex-none md:w-64 lg:border-r">
-                                    <Sidebar className="hidden lg:block" />
+                                <div className="w-full flex-none md:w-64 md:border-r">
+                                    <Sidebar className="hidden md:block" />
                                 </div>
                             )}
 
