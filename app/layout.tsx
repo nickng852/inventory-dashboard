@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
+import { auth } from '@clerk/nextjs'
 
 import Navbar from '@/components/navbar'
+import { Sidebar } from '@/components/sidebar'
 import { ThemeProvider } from '@/components/theme/theme-provider'
 import { Toaster } from '@/components/ui/toaster'
 
@@ -20,6 +22,8 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode
 }>) {
+    const { userId } = auth()
+
     return (
         <ClerkProvider>
             <html lang="en" suppressHydrationWarning>
@@ -30,8 +34,18 @@ export default function RootLayout({
                         enableSystem
                         disableTransitionOnChange
                     >
-                        <Navbar />
-                        {children}
+                        <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
+                            {userId && (
+                                <div className="w-full flex-none md:w-64 lg:border-r">
+                                    <Sidebar className="hidden lg:block" />
+                                </div>
+                            )}
+
+                            <div className="flex-grow md:overflow-y-auto">
+                                <Navbar />
+                                <div className="p-4 md:p-10">{children}</div>
+                            </div>
+                        </div>
                         <Toaster />
                     </ThemeProvider>
                 </body>
