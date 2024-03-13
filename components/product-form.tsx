@@ -163,6 +163,8 @@ export default function ProductForm({
                                                 fieldValues.onChange(
                                                     v.floatValue.toString()
                                                 )
+                                            } else {
+                                                fieldValues.onChange('')
                                             }
                                         }}
                                         prefix={'$'}
