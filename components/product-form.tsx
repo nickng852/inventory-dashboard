@@ -156,22 +156,25 @@ export default function ProductForm({
                             render={({ field: { value, ...fieldValues } }) => (
                                 <FormItem>
                                     <FormLabel>Price*</FormLabel>
-                                    <NumericFormat
-                                        value={value}
-                                        onValueChange={(v) => {
-                                            if (v.floatValue) {
-                                                fieldValues.onChange(
-                                                    v.floatValue.toString()
-                                                )
-                                            } else {
-                                                fieldValues.onChange('')
-                                            }
-                                        }}
-                                        prefix={'$'}
-                                        thousandSeparator={true}
-                                        customInput={Input}
-                                        placeholder="Enter Product Price"
-                                    />
+                                    <FormControl>
+                                        <NumericFormat
+                                            value={value}
+                                            onValueChange={(v) => {
+                                                if (v.floatValue) {
+                                                    fieldValues.onChange(
+                                                        v.floatValue.toString()
+                                                    )
+                                                } else {
+                                                    fieldValues.onChange('')
+                                                }
+                                            }}
+                                            prefix={'$'}
+                                            thousandSeparator={true}
+                                            customInput={Input}
+                                            placeholder="Enter Product Price"
+                                        />
+                                    </FormControl>
+
                                     <FormMessage />
                                 </FormItem>
                             )}

@@ -2,6 +2,7 @@
 import { Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { useForm, useFieldArray } from 'react-hook-form'
+import { NumericFormat } from 'react-number-format'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ReloadIcon } from '@radix-ui/react-icons'
@@ -177,11 +178,28 @@ export default function OrderForm({ products }: { products: Product[] }) {
                                     <FormField
                                         control={form.control}
                                         name={`products.${index}.quantity`}
-                                        render={({ field }) => (
-                                            <FormItem className="w-1/4">
+                                        render={({
+                                            field: { value, ...fieldValues },
+                                        }) => (
+                                            <FormItem className="w-full md:w-auto">
                                                 <FormLabel>Quantity</FormLabel>
                                                 <FormControl>
-                                                    <Input {...field} />
+                                                    <NumericFormat
+                                                        value={value}
+                                                        onValueChange={(v) => {
+                                                            if (v.floatValue) {
+                                                                fieldValues.onChange(
+                                                                    v.floatValue.toString()
+                                                                )
+                                                            } else {
+                                                                fieldValues.onChange(
+                                                                    ''
+                                                                )
+                                                            }
+                                                        }}
+                                                        thousandSeparator={true}
+                                                        customInput={Input}
+                                                    />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -193,16 +211,17 @@ export default function OrderForm({ products }: { products: Product[] }) {
                                             href="#"
                                             className={cn(
                                                 buttonVariants({
-                                                    variant: 'ghost',
+                                                    variant: 'secondary',
                                                     size: 'icon',
                                                 }),
-                                                'h-9 min-h-9 w-9 min-w-9'
+                                                'w-full md:h-9 md:min-h-9 md:w-9 md:min-w-9'
                                             )}
                                             onClick={() => {
                                                 remove(index)
                                             }}
                                         >
-                                            <Trash2 className="h-4 w-4" />
+                                            <Trash2 className="mr-2 h-4 w-4 md:mr-0" />
+                                            <p className="md:hidden">Remove</p>
                                         </Link>
                                     )}
                                 </div>
