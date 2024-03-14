@@ -1,12 +1,21 @@
 'use client'
-import { useParams } from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import { NumericFormat } from 'react-number-format'
+import { Trash2 } from 'lucide-react'
+import Link from 'next/link'
+import { useForm, useFieldArray } from 'react-hook-form'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ReloadIcon } from '@radix-ui/react-icons'
+import { CaretSortIcon, CheckIcon, PlusIcon } from '@radix-ui/react-icons'
 
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from '@/components/ui/command'
 import {
     Form,
     FormControl,
@@ -16,92 +25,49 @@ import {
     FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { useToast } from '@/components/ui/use-toast'
-import { formSchema } from '@/lib/formSchema'
-import { createProduct, editProduct } from '@/lib/products/action'
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover'
+import { formSchema } from '@/lib/orders/formSchema'
+import { cn } from '@/lib/utils'
 
 import { Product } from './data-table/columns'
 
-export default function OrderForm({
-    editMode,
-    userId,
-    data,
-}: {
-    editMode?: boolean
-    userId: string
-    data?: Product
-}) {
-    const params = useParams()
-    const { toast } = useToast()
+export type Order = {
+    products: {
+        name: string
+        quantity: string | number | undefined
+    }[]
+}
 
+export default function OrderForm({ products }: { products: Product[] }) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: data ? data.name : '',
-            description: data ? data.description ?? '' : '',
-            price: data ? (data.price as string) : '',
-            color: data ? (data.color as string) : '',
-            image: undefined,
+            products: [{ id: '', quantity: '' }, ,],
         },
     })
 
-    const onSubmit = (data: z.infer<typeof formSchema>) => {
-        const formData = new FormData()
-
-        Object.entries(data).forEach(([key, value]) => {
-            if (value) {
-                formData.append(key, value)
-            }
-        })
-
-        return editMode
-            ? edit(params.productId as string, formData)
-            : create(formData)
+    const onSubmit = (data: any) => {
+        console.log('data:', data)
     }
 
-    const create = async (data: FormData) => {
-        try {
-            await createProduct(userId, data)
-            toast({
-                description: 'Product created successfully.',
-            })
-        } catch (err) {
-            console.log(err)
-            toast({
-                variant: 'destructive',
-                title: 'Uh oh! Something went wrong.',
-                description: 'There was a problem with your request.',
-            })
-        }
-    }
-
-    const edit = async (productId: string, data: FormData) => {
-        try {
-            await editProduct(productId, data)
-            toast({
-                description: 'Product edited successfully.',
-            })
-        } catch (err) {
-            console.log(err)
-            toast({
-                variant: 'destructive',
-                title: 'Uh oh! Something went wrong.',
-                description: 'There was a problem with your request.',
-            })
-        }
-    }
+    const { fields, append, remove } = useFieldArray({
+        control: form.control,
+        name: 'products',
+    })
 
     return (
         <div className="w-full max-w-4xl space-y-6">
             <div>
                 <h2 className="text-2xl font-bold tracking-tight">
-                    {editMode ? 'Edit Order' : 'Create a new order'}
+                    Create a new order
                 </h2>
                 <p className="text-muted-foreground">
-                    {editMode
-                        ? 'Edit your order in one-click.'
-                        : 'Fill in the information below to add a new order to your store'}
+                    Fill in the information below to add a new order to your
+                    store
                 </p>
             </div>
 
@@ -111,66 +77,151 @@ export default function OrderForm({
                         onSubmit={form.handleSubmit(onSubmit)}
                         className="space-y-4"
                     >
-                        <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Name*</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Enter Product Name"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        <div className="space-y-4">
+                            {fields.map((field, index) => (
+                                <div
+                                    key={index}
+                                    className="flex flex-col items-center gap-4 border-b pb-4 md:flex-row"
+                                >
+                                    <FormField
+                                        control={form.control}
+                                        name={`products.${index}.id`}
+                                        render={({ field }) => (
+                                            <FormItem className="w-full">
+                                                <FormLabel>Product</FormLabel>
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <FormControl>
+                                                            <Button
+                                                                variant="outline"
+                                                                role="combobox"
+                                                                className={cn(
+                                                                    'w-full justify-between',
+                                                                    !field.value &&
+                                                                        'text-muted-foreground'
+                                                                )}
+                                                            >
+                                                                {field.value
+                                                                    ? products.find(
+                                                                          (
+                                                                              product
+                                                                          ) =>
+                                                                              product.id ===
+                                                                              field.value
+                                                                      )?.name
+                                                                    : 'Select product'}
 
-                        <FormField
-                            control={form.control}
-                            name="description"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Description</FormLabel>
-                                    <FormControl>
-                                        <Textarea
-                                            placeholder="Enter Product Description"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="price"
-                            render={({ field: { value, ...fieldValues } }) => (
-                                <FormItem>
-                                    <FormLabel>Price*</FormLabel>
-                                    <NumericFormat
-                                        value={value}
-                                        onValueChange={(v) => {
-                                            if (v.floatValue) {
-                                                fieldValues.onChange(
-                                                    v.floatValue.toString()
-                                                )
-                                            } else {
-                                                fieldValues.onChange('')
-                                            }
-                                        }}
-                                        prefix={'$'}
-                                        thousandSeparator={true}
-                                        customInput={Input}
-                                        placeholder="Enter Product Price"
+                                                                <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                            </Button>
+                                                        </FormControl>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent
+                                                        className="p-0"
+                                                        side="bottom"
+                                                        align="start"
+                                                    >
+                                                        <Command>
+                                                            <CommandInput
+                                                                placeholder="Search product..."
+                                                                className="h-9"
+                                                            />
+                                                            <CommandList>
+                                                                <CommandEmpty>
+                                                                    No product
+                                                                    found.
+                                                                </CommandEmpty>
+                                                                <CommandGroup>
+                                                                    {products.map(
+                                                                        (
+                                                                            product
+                                                                        ) => (
+                                                                            <CommandItem
+                                                                                value={
+                                                                                    product.name
+                                                                                }
+                                                                                key={
+                                                                                    product.id
+                                                                                }
+                                                                                onSelect={() => {
+                                                                                    form.setValue(
+                                                                                        `products.${index}.id`,
+                                                                                        product.id
+                                                                                    )
+                                                                                }}
+                                                                            >
+                                                                                {
+                                                                                    product.name
+                                                                                }
+                                                                                <CheckIcon
+                                                                                    className={cn(
+                                                                                        'ml-auto h-4 w-4',
+                                                                                        product.id ===
+                                                                                            field.value
+                                                                                            ? 'opacity-100'
+                                                                                            : 'opacity-0'
+                                                                                    )}
+                                                                                />
+                                                                            </CommandItem>
+                                                                        )
+                                                                    )}
+                                                                </CommandGroup>
+                                                            </CommandList>
+                                                        </Command>
+                                                    </PopoverContent>
+                                                </Popover>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
                                     />
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+
+                                    <FormField
+                                        control={form.control}
+                                        name={`products.${index}.quantity`}
+                                        render={({ field }) => (
+                                            <FormItem className="w-1/4">
+                                                <FormLabel>Quantity</FormLabel>
+                                                <FormControl>
+                                                    <Input {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    {index > 0 && (
+                                        <Link
+                                            href="#"
+                                            className={cn(
+                                                buttonVariants({
+                                                    variant: 'ghost',
+                                                    size: 'icon',
+                                                }),
+                                                'h-9 min-h-9 w-9 min-w-9'
+                                            )}
+                                            onClick={() => {
+                                                remove(index)
+                                            }}
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Link>
+                                    )}
+                                </div>
+                            ))}
+                            <Button
+                                variant="ghost"
+                                onClick={(e) => {
+                                    e.preventDefault()
+
+                                    append({
+                                        id: '',
+                                        quantity: '',
+                                    })
+                                }}
+                            >
+                                <PlusIcon className="mr-2 h-4 w-4" />
+                                Add More
+                            </Button>
+                        </div>
 
                         <Button
                             type="submit"
@@ -180,7 +231,7 @@ export default function OrderForm({
                             {form.formState.isSubmitting && (
                                 <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                             )}
-                            {editMode ? 'Save' : 'Submit'}
+                            Submit
                         </Button>
                     </form>
                 </Form>

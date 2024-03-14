@@ -22,8 +22,8 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/components/ui/use-toast'
-import { formSchema } from '@/lib/formSchema'
 import { createProduct, editProduct } from '@/lib/products/action'
+import { formSchema } from '@/lib/products/formSchema'
 
 import { Product } from './data-table/columns'
 

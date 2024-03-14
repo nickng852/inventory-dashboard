@@ -56,7 +56,7 @@ export default function DataTableActions({ productId }: { productId: string }) {
                     </Link>
                     <AlertDialogTrigger asChild>
                         <DropdownMenuItem>
-                            <span>Delete</span>
+                            <span className="text-red-600">Delete</span>
                         </DropdownMenuItem>
                     </AlertDialogTrigger>
                 </DropdownMenuContent>

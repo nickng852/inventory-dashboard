@@ -3,8 +3,8 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { put } from '@vercel/blob'
 
-import { formSchema } from '@/lib/formSchema'
 import { prisma } from '@/lib/prisma'
+import { formSchema } from '@/lib/products/formSchema'
 
 export const createProduct = async (userId: string, formData: FormData) => {
     const rawFormData = Object.fromEntries(formData.entries())
