@@ -81,7 +81,7 @@ export default function OrderForm({ products }: { products: Product[] }) {
                         <div className="space-y-4">
                             {fields.map((field, index) => (
                                 <div
-                                    key={index}
+                                    key={field.id}
                                     className="flex flex-col items-center gap-4 border-b pb-4 md:flex-row"
                                 >
                                     <FormField
