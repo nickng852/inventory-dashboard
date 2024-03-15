@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { auth } from '@clerk/nextjs'
 import { PlusIcon } from '@radix-ui/react-icons'
 
-import Products from '@/components/product-list'
+import ProductList from '@/app/products/components/product-list'
 import { Button } from '@/components/ui/button'
 
 export default function Home() {
@@ -30,7 +30,7 @@ export default function Home() {
                         </Link>
                     </div>
 
-                    <Products userId={userId} />
+                    <ProductList userId={userId} />
                 </div>
             </main>
         )

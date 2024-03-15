@@ -1,6 +1,6 @@
 import { auth } from '@clerk/nextjs'
 
-import ProductForm from '@/components/product-form'
+import ProductForm from '@/app/products/components/product-form'
 
 export default function Page() {
     const { userId } = auth()

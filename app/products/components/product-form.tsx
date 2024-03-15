@@ -25,7 +25,7 @@ import { useToast } from '@/components/ui/use-toast'
 import { createProduct, editProduct } from '@/lib/products/action'
 import { formSchema } from '@/lib/products/formSchema'
 
-import { Product } from './data-table/columns'
+import { Product } from '../../../components/data-table/columns'
 
 export default function ProductForm({
     editMode,

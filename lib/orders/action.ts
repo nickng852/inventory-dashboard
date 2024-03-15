@@ -1,99 +1,85 @@
 'use server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { put } from '@vercel/blob'
+import * as z from 'zod'
 
+import { formSchema } from '@/lib/orders/formSchema'
 import { prisma } from '@/lib/prisma'
-import { formSchema } from '@/lib/products/formSchema'
 
-export const createProduct = async (userId: string, formData: FormData) => {
-    const rawFormData = Object.fromEntries(formData.entries())
-
+export const createOrder = async (
+    userId: string,
+    data: z.infer<typeof formSchema>
+) => {
     // backend validation
-    const { name, description, price, color, image } =
-        formSchema.parse(rawFormData)
+    const { products } = formSchema.parse(data)
 
-    let imageUrl: string | undefined = undefined
-
-    if (image) {
-        const blob = await put(image.name, image, {
-            access: 'public',
-        })
-
-        imageUrl = blob.url
-    }
-
-    await prisma.product.create({
+    await prisma.order.create({
         data: {
-            name: name,
-            description: description,
-            price: Number(price),
-            color: color,
-            imageUrl: imageUrl,
             userId: userId,
+            orderItems: {
+                create: products.map((product) => ({
+                    product: {
+                        connect: {
+                            id: product.id,
+                        },
+                    },
+                    quantity: Number(product.quantity),
+                })),
+            },
         },
     })
 
-    revalidatePath('/products')
-    redirect('/products')
+    revalidatePath('/orders')
+    redirect('/orders')
 }
 
-export const editProduct = async (productId: string, formData: FormData) => {
-    const rawFormData = Object.fromEntries(formData.entries())
-
+export const editOrder = async (
+    orderId: string,
+    data: z.infer<typeof formSchema>
+) => {
     // backend validation
-    const { name, description, price, color, image } =
-        formSchema.parse(rawFormData)
+    const { products } = formSchema.parse(data)
 
-    let imageUrl: string | undefined = undefined
+    // await prisma.order.update({
+    //     where: { id: orderId },
+    //     data: {},
+    // })
 
-    if (image) {
-        const blob = await put(image.name, image, {
-            access: 'public',
-        })
-
-        imageUrl = blob.url
-    }
-
-    await prisma.product.update({
-        where: { id: productId },
-        data: {
-            name: name,
-            description: description,
-            price: Number(price),
-            color: color,
-            imageUrl: imageUrl,
-        },
-    })
-
-    revalidatePath('/products')
-    redirect('/products')
+    revalidatePath('/orders')
+    redirect('/orders')
 }
 
-export const deleteProduct = async (productId: string) => {
-    await prisma.product.delete({
-        where: { id: productId },
+export const deleteOrder = async (orderId: string) => {
+    await prisma.order.delete({
+        where: { id: orderId },
     })
 
-    revalidatePath('/products')
+    revalidatePath('/orders')
 }
 
-export const fetchProductsByUserId = async (userId: string) => {
-    const data = await prisma.product.findMany({
+export const fetchOrdersByUserId = async (userId: string) => {
+    const data = await prisma.order.findMany({
         where: { userId: userId },
     })
 
-    revalidatePath('/products')
+    revalidatePath('/orders')
 
     return data
 }
 
-export const fetchProductByProductId = async (productId: string) => {
-    const data = await prisma.product.findUnique({
-        where: { id: productId },
+export const fetchOrderByOrderId = async (orderId: string) => {
+    const data = await prisma.order.findUnique({
+        where: { id: orderId },
+        include: {
+            orderItems: {
+                include: {
+                    product: true,
+                },
+            },
+        },
     })
 
-    revalidatePath('/products')
+    revalidatePath('/orders')
 
     return data
 }

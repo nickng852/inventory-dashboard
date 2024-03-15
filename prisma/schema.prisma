@@ -8,13 +8,32 @@ datasource db {
 }
 
 model Product {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  name        String   @db.VarChar(255)
+  id          String      @id @default(cuid())
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  name        String      @db.VarChar(255)
   description String?
-  price       Decimal  @db.Decimal(100, 2)
+  price       Decimal     @db.Decimal(100, 2)
   color       String?
   imageUrl    String?
   userId      String
+  orderItems  OrderItem[]
+}
+
+model Order {
+  id         String      @id @default(cuid())
+  userId     String
+  orderItems OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity  Int
+
+  @@index([orderId])
+  @@index([productId])
 }

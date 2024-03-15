@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { auth } from '@clerk/nextjs'
 
-import ProductForm from '@/components/product-form'
+import ProductForm from '@/app/products/components/product-form'
 import { fetchProductByProductId } from '@/lib/products/action'
 
 export default async function Page({
