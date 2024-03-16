@@ -1,6 +1,7 @@
 'use client'
 import { Trash2 } from 'lucide-react'
 import Link from 'next/link'
+import { useParams } from 'next/navigation'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { NumericFormat } from 'react-number-format'
 import * as z from 'zod'
@@ -60,6 +61,7 @@ export default function OrderForm({
 }) {
     console.log('order', order)
     console.log('products', products)
+    const params = useParams()
     const { toast } = useToast()
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -75,9 +77,7 @@ export default function OrderForm({
     })
 
     const onSubmit = (data: z.infer<typeof formSchema>) => {
-        console.log('data:', data)
-
-        return create(data)
+        return editMode ? edit(params.orderId as string, data) : create(data)
     }
 
     const create = async (data: z.infer<typeof formSchema>) => {
@@ -98,7 +98,7 @@ export default function OrderForm({
 
     const edit = async (orderId: string, data: z.infer<typeof formSchema>) => {
         try {
-            await editOrder(orderId, data)
+            await editOrder(userId, orderId, data)
             toast({
                 description: 'Order edited successfully.',
             })
@@ -175,8 +175,25 @@ export default function OrderForm({
                                                                                           .id ===
                                                                                       field.value
                                                                               )
-                                                                                  ?.product
-                                                                                  .name
+                                                                                ? order?.orderItems.find(
+                                                                                      (
+                                                                                          item
+                                                                                      ) =>
+                                                                                          item
+                                                                                              .product
+                                                                                              .id ===
+                                                                                          field.value
+                                                                                  )
+                                                                                      ?.product
+                                                                                      .name
+                                                                                : products.find(
+                                                                                      (
+                                                                                          product
+                                                                                      ) =>
+                                                                                          product.id ===
+                                                                                          field.value
+                                                                                  )
+                                                                                      ?.name
                                                                             : 'Select product'
                                                                         : field.value
                                                                           ? products.find(
@@ -284,7 +301,7 @@ export default function OrderForm({
                                         )}
                                     />
 
-                                    {index > 0 && (
+                                    {fields.length !== 1 && (
                                         <Link
                                             href="#"
                                             className={cn(
@@ -319,6 +336,12 @@ export default function OrderForm({
                                 Add More
                             </Button>
                         </div>
+
+                        {form.formState.errors.products && (
+                            <FormMessage>
+                                {form.formState.errors.products.message}
+                            </FormMessage>
+                        )}
 
                         <Button
                             type="submit"

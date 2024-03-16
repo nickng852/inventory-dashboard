@@ -5,8 +5,6 @@ import { fetchOrdersByUserId } from '@/lib/orders/action'
 export default async function OrderList({ userId }: { userId: string }) {
     const data = await fetchOrdersByUserId(userId)
 
-    console.log('data: ', data)
-
     return (
         <div className="w-full">
             <DataTable

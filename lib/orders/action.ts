@@ -34,16 +34,37 @@ export const createOrder = async (
 }
 
 export const editOrder = async (
+    userId: string,
     orderId: string,
     data: z.infer<typeof formSchema>
 ) => {
     // backend validation
     const { products } = formSchema.parse(data)
 
-    // await prisma.order.update({
-    //     where: { id: orderId },
-    //     data: {},
-    // })
+    await prisma.orderItem.deleteMany({
+        where: {
+            orderId: orderId,
+        },
+    })
+
+    await prisma.order.update({
+        where: {
+            id: orderId,
+        },
+        data: {
+            userId: userId,
+            orderItems: {
+                create: products.map((product) => ({
+                    product: {
+                        connect: {
+                            id: product.id,
+                        },
+                    },
+                    quantity: Number(product.quantity),
+                })),
+            },
+        },
+    })
 
     revalidatePath('/orders')
     redirect('/orders')

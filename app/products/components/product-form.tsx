@@ -10,6 +10,7 @@ import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ReloadIcon } from '@radix-ui/react-icons'
 
+import { Product } from '@/app/products/components/data-table/columns'
 import { Button } from '@/components/ui/button'
 import {
     Form,
@@ -24,8 +25,6 @@ import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/components/ui/use-toast'
 import { createProduct, editProduct } from '@/lib/products/action'
 import { formSchema } from '@/lib/products/formSchema'
-
-import { Product } from '../../../components/data-table/columns'
 
 export default function ProductForm({
     editMode,
