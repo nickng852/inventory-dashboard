@@ -22,8 +22,12 @@ model Product {
 
 model Order {
   id         String      @id @default(cuid())
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
   userId     String
+  orderDate  DateTime
   orderItems OrderItem[]
+  grandTotal Decimal     @db.Decimal(100, 2)
 }
 
 model OrderItem {

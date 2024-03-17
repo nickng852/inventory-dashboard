@@ -1,12 +1,20 @@
+import { numericFormatter } from 'react-number-format'
 import { auth } from '@clerk/nextjs'
 import { ReaderIcon, CubeIcon } from '@radix-ui/react-icons'
 
+import { fetchProductsByUserId } from '@/app/(products)/lib/action'
 import OverviewCard from '@/components/overview-card'
-import { fetchProductsByUserId } from '@/lib/products/action'
+
+import { fetchOrdersByUserId } from './(orders)/lib/action'
 
 export default async function Home() {
     const { userId } = auth()
-    const data = await fetchProductsByUserId(userId ?? '')
+    const products = await fetchProductsByUserId(userId ?? '')
+    const orders = await fetchOrdersByUserId(userId ?? '')
+
+    const totalRevenue = orders.reduce((acc, cV) => {
+        return (acc += Number(cV.grandTotal))
+    }, 0)
 
     if (userId)
         return (
@@ -20,7 +28,7 @@ export default async function Home() {
 
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                         <OverviewCard
-                            type="percentage"
+                            type="number"
                             cardTitle="Total Revenue"
                             cardIcon={
                                 <svg
@@ -36,19 +44,20 @@ export default async function Home() {
                                     <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                                 </svg>
                             }
-                            data={123456}
+                            data={totalRevenue}
+                            prefix="$"
                         />
                         <OverviewCard
-                            type="percentage"
+                            type="number"
                             cardTitle="Orders"
                             cardIcon={<ReaderIcon />}
-                            data={123456}
+                            data={orders.length}
                         />
                         <OverviewCard
                             type="number"
                             cardTitle="Products"
                             cardIcon={<CubeIcon />}
-                            data={data.length}
+                            data={products.length}
                         />
                     </div>
                 </div>

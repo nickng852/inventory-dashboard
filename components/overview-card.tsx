@@ -7,6 +7,7 @@ type Props = {
     cardTitle: string
     cardIcon: React.ReactNode
     data: number
+    prefix?: string
 }
 
 export default async function OverviewCard({
@@ -14,6 +15,7 @@ export default async function OverviewCard({
     cardTitle,
     cardIcon,
     data,
+    prefix,
 }: Props) {
     return (
         <Card>
@@ -28,6 +30,7 @@ export default async function OverviewCard({
             <CardContent>
                 <div className="text-2xl font-bold">
                     {numericFormatter(data.toString(), {
+                        ...(prefix && { prefix: prefix }),
                         thousandSeparator: true,
                     })}
                 </div>

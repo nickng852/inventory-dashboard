@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Order" ADD COLUMN     "grandTotal" DECIMAL(100,2) NOT NULL DEFAULT 0;
