@@ -377,10 +377,10 @@ export default function OrderForm({
                                     />
 
                                     <FormItem className="flex w-full flex-col">
-                                        <FormLabel className="text-right">
+                                        <FormLabel className="md:text-right">
                                             Total
                                         </FormLabel>
-                                        <p className="h-9 py-2 text-right">
+                                        <p className="h-9 py-2 md:text-right">
                                             {numericFormatter(
                                                 getTotalPrice(
                                                     orderItems[index].id,
