@@ -102,7 +102,7 @@ export const columns: ColumnDef<Product>[] = [
                 />
             )
         },
-        cell: ({ row }) => moment(row.original.createdAt).format('Y-M-D'),
+        cell: ({ row }) => moment(row.original.createdAt).format('YYYY-MM-DD'),
     },
     {
         accessorKey: 'updatedAt',
@@ -116,7 +116,7 @@ export const columns: ColumnDef<Product>[] = [
                 />
             )
         },
-        cell: ({ row }) => moment(row.original.updatedAt).format('Y-M-D'),
+        cell: ({ row }) => moment(row.original.updatedAt).format('YYYY-MM-DD'),
     },
     {
         id: 'actions',
