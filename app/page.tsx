@@ -35,7 +35,7 @@ export default async function Home() {
 
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                         <OverviewCard
-                            type="number"
+                            type="dollar"
                             cardTitle="Total Revenue"
                             cardIcon={
                                 <svg

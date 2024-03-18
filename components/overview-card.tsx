@@ -1,6 +1,12 @@
 import { numericFormatter } from 'react-number-format'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 type Props = {
     type: string
@@ -28,17 +34,27 @@ export default async function OverviewCard({
                 {cardIcon}
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold">
-                    {numericFormatter(data.toString(), {
-                        ...(prefix && { prefix: prefix }),
-                        thousandSeparator: true,
-                    })}
-                </div>
-                {type === 'percentage' && (
-                    <p className="text-xs text-muted-foreground">
-                        +19% from last month
-                    </p>
-                )}
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <div className="text-2xl font-bold">
+                                {type === 'dollar' && <span>$</span>}
+                                {Intl.NumberFormat('en-US', {
+                                    notation: 'compact',
+                                    maximumFractionDigits: 2,
+                                }).format(data)}
+                            </div>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom">
+                            <p>
+                                {numericFormatter(data.toString(), {
+                                    ...(prefix && { prefix: prefix }),
+                                    thousandSeparator: true,
+                                })}
+                            </p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </CardContent>
         </Card>
     )
