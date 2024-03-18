@@ -5,8 +5,7 @@ import moment from 'moment'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useForm, useFieldArray } from 'react-hook-form'
-import { numericFormatter } from 'react-number-format'
-import { NumericFormat } from 'react-number-format'
+import { NumericFormat, numericFormatter } from 'react-number-format'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ReloadIcon } from '@radix-ui/react-icons'
@@ -15,7 +14,7 @@ import { CalendarIcon } from '@radix-ui/react-icons'
 
 import { createOrder, editOrder } from '@/app/(orders)/lib/action'
 import { formSchema } from '@/app/(orders)/lib/formSchema'
-import { Order } from '@/app/(orders)/lib/type'
+import { OrderWithOrderItems } from '@/app/(orders)/lib/type'
 import { Product } from '@/app/(products)/lib/type'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
@@ -52,7 +51,7 @@ export default function OrderForm({
 }: {
     editMode?: boolean
     userId: string
-    order?: Order
+    order?: OrderWithOrderItems
     products: Product[]
 }) {
     const params = useParams()

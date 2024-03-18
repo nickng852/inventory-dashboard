@@ -1,16 +1,23 @@
-import { numericFormatter } from 'react-number-format'
 import { auth } from '@clerk/nextjs'
 import { ReaderIcon, CubeIcon } from '@radix-ui/react-icons'
 
+import { fetchOrdersByUserId } from '@/app/(orders)/lib/action'
 import { fetchProductsByUserId } from '@/app/(products)/lib/action'
+import Chart from '@/components/chart'
 import OverviewCard from '@/components/overview-card'
-
-import { fetchOrdersByUserId } from './(orders)/lib/action'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default async function Home() {
     const { userId } = auth()
     const products = await fetchProductsByUserId(userId ?? '')
     const orders = await fetchOrdersByUserId(userId ?? '')
+
+    const formattedOrders = orders.map((order) => {
+        return {
+            ...order,
+            grandTotal: Number(order.grandTotal),
+        }
+    })
 
     const totalRevenue = orders.reduce((acc, cV) => {
         return (acc += Number(cV.grandTotal))
@@ -60,6 +67,15 @@ export default async function Home() {
                             data={products.length}
                         />
                     </div>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Total Revenue</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <Chart data={formattedOrders} />
+                        </CardContent>
+                    </Card>
                 </div>
             </main>
         )
