@@ -12,12 +12,16 @@ export default async function Home() {
     const products = await fetchProductsByUserId(userId ?? '')
     const orders = await fetchOrdersByUserId(userId ?? '')
 
-    const formattedOrders = orders.map((order) => {
-        return {
-            ...order,
-            grandTotal: Number(order.grandTotal),
-        }
-    })
+    const formattedOrders = orders
+        .map((order) => {
+            return {
+                ...order,
+                grandTotal: Number(order.grandTotal),
+            }
+        })
+        .sort((a, b) => {
+            return a.orderDate.getTime() - b.orderDate.getTime()
+        })
 
     const totalRevenue = orders.reduce((acc, cV) => {
         return (acc += Number(cV.grandTotal))
