@@ -88,6 +88,25 @@ export const fetchProductsByUserId = async (userId: string) => {
     return data
 }
 
+export const fetchProductsByProductName = async (
+    userId: string,
+    query: string
+) => {
+    const data = await prisma.product.findMany({
+        where: {
+            userId: userId,
+            name: {
+                contains: query,
+                mode: 'insensitive',
+            },
+        },
+    })
+
+    revalidatePath('/products')
+
+    return data
+}
+
 export const fetchProductByProductId = async (productId: string) => {
     const data = await prisma.product.findUnique({
         where: { id: productId },

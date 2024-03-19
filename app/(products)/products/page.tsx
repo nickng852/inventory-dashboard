@@ -5,7 +5,11 @@ import { PlusIcon } from '@radix-ui/react-icons'
 import ProductList from '@/app/(products)/components/product-list'
 import { Button } from '@/components/ui/button'
 
-export default function Home() {
+export default function Home({
+    searchParams,
+}: {
+    searchParams: { q: string }
+}) {
     const { userId } = auth()
 
     if (userId)
@@ -30,7 +34,7 @@ export default function Home() {
                         </Link>
                     </div>
 
-                    <ProductList userId={userId} />
+                    <ProductList searchParams={searchParams} userId={userId} />
                 </div>
             </main>
         )
