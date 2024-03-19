@@ -1,7 +1,9 @@
 'use client'
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
+import { useTransition } from 'react'
 import _ from 'lodash'
-import { useRouter } from 'next/navigation'
+import { Loader2Icon } from 'lucide-react'
+import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { MixerHorizontalIcon } from '@radix-ui/react-icons'
 import {
     ColumnDef,
@@ -19,7 +21,7 @@ import {
 
 import { DataTablePagination } from '@/app/(products)/components/data-table/data-table-pagination'
 import { Product } from '@/app/(products)/lib/type'
-import { Button } from '@/components/ui/button'
+import { Input } from '@/components/input-with-spinner'
 // import {
 //     Pagination,
 //     PaginationContent,
@@ -29,6 +31,7 @@ import { Button } from '@/components/ui/button'
 //     PaginationNext,
 //     PaginationPrevious,
 // } from '@/components/ui/pagination'
+import { Button } from '@/components/ui/button'
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -37,7 +40,6 @@ import {
     DropdownMenuSeparator,
     DropdownMenuCheckboxItem,
 } from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
 import {
     Table,
     TableBody,
@@ -57,6 +59,29 @@ export function DataTable<TData, TValue>({
     data,
 }: DataTableProps<TData, TValue>) {
     const router = useRouter()
+    const pathname = usePathname()
+    const searchParams = useSearchParams()
+    const [isPending, startTransition] = useTransition()
+
+    const createQueryString = useCallback(
+        (name: string, value: string) => {
+            const params = new URLSearchParams(searchParams.toString())
+            params.set(name, value)
+
+            return params.toString()
+        },
+        [searchParams]
+    )
+
+    const handleSearch = (name: string, value: string) => {
+        const params = createQueryString(name, value)
+
+        startTransition(() => {
+            router.replace(`${pathname}?${params.toString()}`)
+            table.getColumn('name')?.setFilterValue(value)
+        })
+    }
+
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
         {}
@@ -91,16 +116,9 @@ export function DataTable<TData, TValue>({
             <div className="flex items-center gap-4">
                 <Input
                     placeholder="Filter products..."
-                    value={
-                        (table.getColumn('name')?.getFilterValue() as string) ??
-                        ''
-                    }
-                    onChange={(event) =>
-                        table
-                            .getColumn('name')
-                            ?.setFilterValue(event.target.value)
-                    }
-                    className="md:max-w-xs"
+                    onChange={(e) => handleSearch('q', e.target.value)}
+                    loading={isPending}
+                    endIcon={Loader2Icon}
                 />
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
