@@ -12,16 +12,29 @@ export default async function Home() {
     const products = await fetchProductsByUserId(userId ?? '')
     const orders = await fetchOrdersByUserId(userId ?? '')
 
-    const formattedOrders = orders
-        .map((order) => {
-            return {
-                ...order,
-                grandTotal: Number(order.grandTotal),
-            }
-        })
-        .sort((a, b) => {
-            return a.orderDate.getTime() - b.orderDate.getTime()
-        })
+    const formattedOrders = orders.map((order) => {
+        return {
+            orderDate: order.orderDate,
+            grandTotal: Number(order.grandTotal),
+        }
+    })
+
+    const summedOrders = formattedOrders.reduce((acc: any, cV: any) => {
+        let orderDate = cV.orderDate
+        let found = acc.find(
+            (el: any) => el.orderDate.getTime() === orderDate.getTime()
+        )
+        if (found) {
+            found.grandTotal += cV.grandTotal
+        } else {
+            acc.push(cV)
+        }
+        return acc
+    }, [])
+
+    const sortedOrders = summedOrders.sort((a: any, b: any) => {
+        return a.orderDate.getTime() - b.orderDate.getTime()
+    })
 
     const totalRevenue = orders.reduce((acc, cV) => {
         return (acc += Number(cV.grandTotal))
@@ -77,7 +90,7 @@ export default async function Home() {
                             <CardTitle>Total Revenue</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <Chart data={formattedOrders} />
+                            <Chart data={sortedOrders} />
                         </CardContent>
                     </Card>
                 </div>
