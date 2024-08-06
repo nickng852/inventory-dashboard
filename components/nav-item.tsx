@@ -1,4 +1,4 @@
-import { PanelsTopLeft } from 'lucide-react'
+import { PanelsTopLeft, Settings } from 'lucide-react'
 import { CubeIcon, ReaderIcon } from '@radix-ui/react-icons'
 
 export const navItems = [
@@ -19,5 +19,11 @@ export const navItems = [
         title: 'Orders',
         href: '/orders',
         icon: ReaderIcon,
+    },
+    {
+        id: 'settings',
+        title: 'Settings',
+        href: '/settings',
+        icon: Settings,
     },
 ]
