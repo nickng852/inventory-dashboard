@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { auth } from '@clerk/nextjs'
+import { auth } from '@clerk/nextjs/server'
 
 import ProductForm from '@/app/(products)/components/product-form'
 import { fetchProductByProductId } from '@/app/(products)/lib/action'

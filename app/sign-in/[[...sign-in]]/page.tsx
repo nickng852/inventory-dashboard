@@ -11,13 +11,6 @@ export default function Page() {
             <SignIn
                 appearance={{
                     baseTheme: resolvedTheme === 'dark' ? dark : undefined,
-                    elements: {
-                        formButtonPrimary:
-                            'bg-primary text-primary-foreground shadow hover:bg-primary/90',
-                    },
-                    variables: {
-                        colorPrimary: '#71717a',
-                    },
                 }}
             />
         </div>

@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs'
+import { auth } from '@clerk/nextjs/server'
 
 import Auth from './auth'
 import MobileMenu from './mobile-menu'
