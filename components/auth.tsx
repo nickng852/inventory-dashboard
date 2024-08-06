@@ -26,11 +26,9 @@ export default function Auth() {
                         appearance: {
                             baseTheme:
                                 resolvedTheme === 'dark' ? dark : undefined,
-                            variables: {
-                                colorPrimary: '#71717a',
-                            },
                         },
                     }}
+                    showName={true}
                 />
             </SignedIn>
             <SignedOut>

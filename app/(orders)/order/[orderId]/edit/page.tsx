@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { auth } from '@clerk/nextjs'
+import { auth } from '@clerk/nextjs/server'
 
 import OrderForm from '@/app/(orders)/components/order-form'
 import { fetchOrderByOrderId } from '@/app/(orders)/lib/action'

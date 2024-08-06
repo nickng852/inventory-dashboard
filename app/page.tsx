@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs'
+import { auth } from '@clerk/nextjs/server'
 import { ReaderIcon, CubeIcon } from '@radix-ui/react-icons'
 
 import { fetchOrdersByUserId } from '@/app/(orders)/lib/action'

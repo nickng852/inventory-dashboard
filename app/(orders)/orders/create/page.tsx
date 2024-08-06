@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs'
+import { auth } from '@clerk/nextjs/server'
 
 import OrderForm from '@/app/(orders)/components/order-form'
 import { fetchProductsByUserId } from '@/app/(products)/lib/action'

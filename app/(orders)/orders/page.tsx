@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { auth } from '@clerk/nextjs'
+import { auth } from '@clerk/nextjs/server'
 import { PlusIcon } from '@radix-ui/react-icons'
 
 import OrderList from '@/app/(orders)/components/order-list'

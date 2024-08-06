@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
-import { auth } from '@clerk/nextjs'
+import { auth } from '@clerk/nextjs/server'
 
 import Navbar from '@/components/navbar'
 import { Sidebar } from '@/components/sidebar'

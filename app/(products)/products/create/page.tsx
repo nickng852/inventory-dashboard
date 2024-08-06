@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs'
+import { auth } from '@clerk/nextjs/server'
 
 import ProductForm from '@/app/(products)/components/product-form'
 
