@@ -2,7 +2,6 @@ import { auth } from '@clerk/nextjs/server'
 
 import Auth from './auth'
 import MobileMenu from './mobile-menu'
-import { ModeToggle } from './theme/mode-toggle'
 
 export default function Navbar() {
     const { userId } = auth()
@@ -14,8 +13,7 @@ export default function Navbar() {
                     <MobileMenu userId={userId ?? ''} />
                 </div>
 
-                <div className="ml-auto flex items-center space-x-4">
-                    <ModeToggle />
+                <div className="ml-auto flex items-center">
                     <Auth />
                 </div>
             </div>
