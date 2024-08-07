@@ -14,7 +14,7 @@ import {
     NameType,
 } from 'recharts/types/component/DefaultTooltipContent'
 
-import { Order } from '@/app/(orders)/lib/type'
+import { Order } from '@/app/(dashboard)/(orders)/lib/type'
 import { useConfig } from '@/lib/hooks/use-config'
 import { themes } from '@/lib/themes'
 
