@@ -25,7 +25,7 @@ export default function MobileMenu() {
                 </Button>
             </SheetTrigger>
 
-            <SheetContent side={'left'} className="flex flex-col justify-end">
+            <SheetContent side={'left'} className="flex flex-col">
                 <SheetHeader>
                     <SheetDescription>
                         <div className="mt-10 flex flex-col gap-2">

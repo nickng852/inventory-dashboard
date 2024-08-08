@@ -11,7 +11,7 @@ export default function Home() {
     if (userId)
         return (
             <main className="h-full flex-1 flex-col items-center md:flex">
-                <div className="w-full max-w-4xl space-y-6 md:space-y-8">
+                <div className="w-full max-w-5xl space-y-6 md:space-y-8">
                     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                         <div>
                             <h2 className="text-2xl font-bold tracking-tight">

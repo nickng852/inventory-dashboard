@@ -100,7 +100,7 @@ export default function ProductForm({
     }
 
     return (
-        <div className="w-full max-w-4xl space-y-6">
+        <div className="w-full max-w-5xl space-y-6">
             <div>
                 <h2 className="text-2xl font-bold tracking-tight">
                     {editMode ? 'Edit Product' : 'Create a new product'}
