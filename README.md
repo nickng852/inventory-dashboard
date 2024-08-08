@@ -28,7 +28,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/nickng852/inventory-dashboard">
-    <img src="https://github.com/nickng852/inventory-dashboard/blob/master/assets/images/screenshot.jpeg?raw=true" alt="Screenshot">
+    <img src="https://github.com/nickng852/inventory-dashboard/blob/master/public/screenshot.jpeg?raw=true" alt="Screenshot">
   </a>
 
 <h3 align="center">inventory-dashboard</h3>
