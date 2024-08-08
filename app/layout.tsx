@@ -30,7 +30,7 @@ export default function RootLayout({
                         enableSystem
                         disableTransitionOnChange
                     >
-                        {children}
+                        <div className="h-screen w-full">{children}</div>
 
                         <Toaster />
                     </ThemeProvider>
