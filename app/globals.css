@@ -3,6 +3,14 @@
 @tailwind utilities;
 
 @layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+
     :root {
         --background: 0 0% 100%;
         --foreground: 224 71.4% 4.1%;
@@ -33,6 +41,14 @@
         --ring: 224 71.4% 4.1%;
 
         --radius: 0.5rem;
+
+        --chart-1: 12 76% 61%;
+        --chart-2: 173 58% 39%;
+        --chart-3: 197 37% 24%;
+        --chart-4: 43 74% 66%;
+        --chart-5: 27 87% 67%;
+
+        --color-grandTotal: #2563eb;
     }
 
     .dark {
@@ -63,14 +79,13 @@
         --border: 215 27.9% 16.9%;
         --input: 215 27.9% 16.9%;
         --ring: 216 12.2% 83.9%;
-    }
-}
 
-@layer base {
-    * {
-        @apply border-border;
-    }
-    body {
-        @apply bg-background text-foreground;
+        --chart-1: 220 70% 50%;
+        --chart-2: 160 60% 45%;
+        --chart-3: 30 80% 55%;
+        --chart-4: 280 65% 60%;
+        --chart-5: 340 75% 55%;
+
+        --color-grandTotal: #2563eb;
     }
 }
