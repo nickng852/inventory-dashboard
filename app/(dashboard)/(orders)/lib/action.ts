@@ -92,6 +92,21 @@ export const fetchOrdersByUserId = async (userId: string) => {
     return data
 }
 
+export const fetchSummedOrdersByUserId = async (userId: string) => {
+    const data = await prisma.order.groupBy({
+        by: ['orderDate'],
+        where: { userId: userId },
+        _sum: {
+            grandTotal: true,
+        },
+        orderBy: {
+            orderDate: 'asc',
+        },
+    })
+
+    return data
+}
+
 export const fetchOrderByOrderId = async (orderId: string) => {
     const data = await prisma.order.findUnique({
         where: { id: orderId },

@@ -1,43 +1,23 @@
 import { auth } from '@clerk/nextjs/server'
 import { ReaderIcon, CubeIcon } from '@radix-ui/react-icons'
 
-import { fetchOrdersByUserId } from '@/app/(dashboard)/(orders)/lib/action'
+import { fetchSummedOrdersByUserId } from '@/app/(dashboard)/(orders)/lib/action'
 import { fetchProductsByUserId } from '@/app/(dashboard)/(products)/lib/action'
 import Chart from '@/components/chart'
 import OverviewCard from '@/components/overview-card'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default async function Home() {
     const { userId } = auth()
     const products = await fetchProductsByUserId(userId ?? '')
-    const orders = await fetchOrdersByUserId(userId ?? '')
+    const orders = await fetchSummedOrdersByUserId(userId ?? '')
 
-    const formattedOrders = orders.map((order) => {
-        return {
-            orderDate: order.orderDate,
-            grandTotal: Number(order.grandTotal),
-        }
-    })
-
-    const summedOrders = formattedOrders.reduce((acc: any, cV: any) => {
-        let orderDate = cV.orderDate
-        let found = acc.find(
-            (el: any) => el.orderDate.getTime() === orderDate.getTime()
-        )
-        if (found) {
-            found.grandTotal += cV.grandTotal
-        } else {
-            acc.push(cV)
-        }
-        return acc
-    }, [])
-
-    const sortedOrders = summedOrders.sort((a: any, b: any) => {
-        return a.orderDate.getTime() - b.orderDate.getTime()
-    })
+    const formattedOrders = orders.map((order) => ({
+        ...order,
+        _sum: { grandTotal: Number(order._sum.grandTotal) || 0 },
+    }))
 
     const totalRevenue = orders.reduce((acc, cV) => {
-        return (acc += Number(cV.grandTotal))
+        return acc + (Number(cV._sum.grandTotal) || 0)
     }, 0)
 
     if (userId)
@@ -85,14 +65,7 @@ export default async function Home() {
                         />
                     </div>
 
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Total Revenue</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <Chart data={sortedOrders} />
-                        </CardContent>
-                    </Card>
+                    <Chart data={formattedOrders} />
                 </div>
             </main>
         )

@@ -1,85 +1,95 @@
 'use client'
-import moment from 'moment'
-import { useTheme } from 'next-themes'
-import { numericFormatter } from 'react-number-format'
-import {
-    LineChart,
-    Line,
-    Tooltip,
-    TooltipProps,
-    ResponsiveContainer,
-} from 'recharts'
-import {
-    ValueType,
-    NameType,
-} from 'recharts/types/component/DefaultTooltipContent'
+import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts'
 
-import { Order } from '@/app/(dashboard)/(orders)/lib/type'
-import { useConfig } from '@/lib/hooks/use-config'
-import { themes } from '@/lib/themes'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+    ChartConfig,
+    ChartContainer,
+    ChartTooltip,
+    ChartTooltipContent,
+} from '@/components/ui/chart'
 
-const CustomTooltip = ({
-    active,
-    payload,
-}: TooltipProps<ValueType, NameType>) => {
-    if (active && payload && payload.length) {
-        return (
-            <div className="rounded-lg border bg-background p-2 shadow-sm">
-                <div className="flex flex-col">
-                    <span className="text-[0.70rem] uppercase text-muted-foreground">
-                        {moment(payload[0].payload.orderDate).format(
-                            'YYYY/MM/DD'
-                        )}
-                    </span>
-                    <span className="font-bold">
-                        {numericFormatter(
-                            (payload[0].value as string).toString(),
-                            {
-                                prefix: '$',
-                                thousandSeparator: true,
-                            }
-                        )}
-                    </span>
-                </div>
-            </div>
-        )
+type Props = {
+    _sum: {
+        grandTotal: number
     }
+    orderDate: Date
+}[]
 
-    return null
-}
+const chartConfig = {
+    '_sum.grandTotal': {
+        label: 'Grand Total',
+    },
+} satisfies ChartConfig
 
-export default function Chart({ data }: { data: Order[] }) {
-    const { theme: mode } = useTheme()
-    const [config] = useConfig()
-
-    const theme = themes.find((theme) => theme.name === config.theme)
-
+export default function Component({ data }: { data: Props }) {
     return (
-        <div className="h-[100px]">
-            <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={data}>
-                    <Tooltip content={<CustomTooltip />} />
-                    <Line
-                        type="monotone"
-                        dataKey="grandTotal"
-                        strokeWidth={2}
-                        activeDot={{
-                            r: 6,
-                            style: { fill: 'var(--theme-primary)' },
-                        }}
-                        style={
-                            {
-                                stroke: 'var(--theme-primary)',
-                                '--theme-primary': `hsl(${
-                                    theme?.cssVars[
-                                        mode === 'dark' ? 'dark' : 'light'
-                                    ].primary
-                                })`,
-                            } as React.CSSProperties
-                        }
-                    />
-                </LineChart>
-            </ResponsiveContainer>
-        </div>
+        <Card>
+            <CardHeader>
+                <CardTitle>Total Revenue</CardTitle>
+            </CardHeader>
+            <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+                <ChartContainer
+                    config={chartConfig}
+                    className="aspect-auto h-[250px] w-full"
+                >
+                    <AreaChart data={data}>
+                        <defs>
+                            <linearGradient
+                                id="fillGrandTotal"
+                                x1="0"
+                                y1="0"
+                                x2="0"
+                                y2="1"
+                            >
+                                <stop
+                                    offset="5%"
+                                    stopColor="var(--color-grandTotal)"
+                                    stopOpacity={0.8}
+                                />
+                                <stop
+                                    offset="95%"
+                                    stopColor="var(--color-grandTotal)"
+                                    stopOpacity={0.1}
+                                />
+                            </linearGradient>
+                        </defs>
+                        <CartesianGrid vertical={false} />
+                        <XAxis
+                            dataKey="orderDate"
+                            tickLine={false}
+                            axisLine={false}
+                            tickMargin={8}
+                            minTickGap={32}
+                            tickFormatter={(value) => {
+                                const date = new Date(value)
+                                return date.toLocaleDateString('en-US', {
+                                    month: 'short',
+                                    day: 'numeric',
+                                })
+                            }}
+                            interval="preserveStartEnd"
+                        />
+                        <ChartTooltip
+                            cursor={false}
+                            content={
+                                <ChartTooltipContent
+                                    indicator="dot"
+                                    hideLabel
+                                    hideIndicator
+                                />
+                            }
+                        />
+                        <Area
+                            dataKey="_sum.grandTotal"
+                            type="natural"
+                            fill="url(#fillGrandTotal)"
+                            stroke="var(--color-grandTotal)"
+                            stackId="a"
+                        />
+                    </AreaChart>
+                </ChartContainer>
+            </CardContent>
+        </Card>
     )
 }
