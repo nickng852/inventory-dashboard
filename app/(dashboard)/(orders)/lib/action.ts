@@ -99,6 +99,7 @@ export const fetchSummedOrdersByUserId = async (userId: string) => {
         _sum: {
             grandTotal: true,
         },
+        _count: true,
         orderBy: {
             orderDate: 'asc',
         },

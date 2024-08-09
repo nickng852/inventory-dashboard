@@ -3,22 +3,27 @@ import { ReaderIcon, CubeIcon } from '@radix-ui/react-icons'
 
 import { fetchSummedOrdersByUserId } from '@/app/(dashboard)/(orders)/lib/action'
 import { fetchProductsByUserId } from '@/app/(dashboard)/(products)/lib/action'
-import Chart from '@/components/chart'
 import OverviewCard from '@/components/overview-card'
+import TotalOrdersChart from '@/components/total-orders-chart'
+import TotalRevenueChart from '@/components/total-revenue-chart'
 
 export default async function Home() {
     const { userId } = auth()
     const products = await fetchProductsByUserId(userId ?? '')
     const orders = await fetchSummedOrdersByUserId(userId ?? '')
 
+    const totalRevenue = orders.reduce((acc, cV) => {
+        return acc + (Number(cV._sum.grandTotal) || 0)
+    }, 0)
+
+    const totalOrders = orders.reduce((acc, cV) => {
+        return acc + cV._count
+    }, 0)
+
     const formattedOrders = orders.map((order) => ({
         ...order,
         _sum: { grandTotal: Number(order._sum.grandTotal) || 0 },
     }))
-
-    const totalRevenue = orders.reduce((acc, cV) => {
-        return acc + (Number(cV._sum.grandTotal) || 0)
-    }, 0)
 
     if (userId)
         return (
@@ -55,7 +60,7 @@ export default async function Home() {
                             type="number"
                             cardTitle="Orders"
                             cardIcon={<ReaderIcon />}
-                            data={orders.length}
+                            data={totalOrders}
                         />
                         <OverviewCard
                             type="number"
@@ -65,7 +70,9 @@ export default async function Home() {
                         />
                     </div>
 
-                    <Chart data={formattedOrders} />
+                    <TotalRevenueChart data={formattedOrders} />
+
+                    <TotalOrdersChart data={formattedOrders} />
                 </div>
             </main>
         )
