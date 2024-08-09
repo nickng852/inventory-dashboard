@@ -38,6 +38,7 @@
         --chart-4: 43 74% 66%;
         --chart-5: 27 87% 67%;
         --color-grandTotal: #2563eb;
+        --color-count: #2563eb;
     }
 
     .dark {
@@ -66,5 +67,6 @@
         --chart-4: 280 65% 60%;
         --chart-5: 340 75% 55%;
         --color-grandTotal: #2563eb;
+        --color-count: #2563eb;
     }
 }

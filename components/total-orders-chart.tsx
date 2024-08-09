@@ -13,20 +13,21 @@ type Props = {
     _sum: {
         grandTotal: number
     }
+    _count: number
     orderDate: Date
 }[]
 
 const chartConfig = {
-    '_sum.grandTotal': {
-        label: 'Grand Total',
+    _count: {
+        label: 'Count',
     },
 } satisfies ChartConfig
 
-export default function Component({ data }: { data: Props }) {
+export default function TotalOrdersChart({ data }: { data: Props }) {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Total Revenue</CardTitle>
+                <CardTitle>Total Orders</CardTitle>
             </CardHeader>
             <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
                 <ChartContainer
@@ -36,7 +37,7 @@ export default function Component({ data }: { data: Props }) {
                     <AreaChart data={data}>
                         <defs>
                             <linearGradient
-                                id="fillGrandTotal"
+                                id="fillCount"
                                 x1="0"
                                 y1="0"
                                 x2="0"
@@ -44,12 +45,12 @@ export default function Component({ data }: { data: Props }) {
                             >
                                 <stop
                                     offset="5%"
-                                    stopColor="var(--color-grandTotal)"
+                                    stopColor="var(--color-count)"
                                     stopOpacity={0.8}
                                 />
                                 <stop
                                     offset="95%"
-                                    stopColor="var(--color-grandTotal)"
+                                    stopColor="var(--color-count)"
                                     stopOpacity={0.1}
                                 />
                             </linearGradient>
@@ -81,10 +82,10 @@ export default function Component({ data }: { data: Props }) {
                             }
                         />
                         <Area
-                            dataKey="_sum.grandTotal"
+                            dataKey="_count"
                             type="natural"
-                            fill="url(#fillGrandTotal)"
-                            stroke="var(--color-grandTotal)"
+                            fill="url(#fillCount)"
+                            stroke="var(--color-count)"
                             stackId="a"
                         />
                     </AreaChart>
