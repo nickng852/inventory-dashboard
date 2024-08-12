@@ -14,7 +14,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         const EndIcon = endIcon
 
         return (
-            <div className="relative w-full md:w-1/2">
+            <div className="relative w-full md:max-w-sm">
                 <input
                     type={type}
                     className={cn(
