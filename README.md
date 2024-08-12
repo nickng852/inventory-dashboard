@@ -38,7 +38,7 @@ Dashboard for inventory management with Next.js 14
 <a href="https://github.com/nickng852/inventory-dashboard"><strong>Explore the docs »</strong></a>
 <br />
 <br />
-<a href="https://github.com/nickng852/inventory-dashboard">View Demo</a>
+<a href="http://inventory-dashboard-nickng852s-projects.vercel.app">View Demo</a>
 ·
 <a href="https://github.com/nickng852/inventory-dashboard/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
 ·
