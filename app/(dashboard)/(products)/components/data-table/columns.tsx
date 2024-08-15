@@ -1,5 +1,4 @@
 'use client'
-import moment from 'moment'
 import Image from 'next/image'
 import { numericFormatter } from 'react-number-format'
 import { CaretSortIcon } from '@radix-ui/react-icons'
@@ -7,6 +6,7 @@ import { ColumnDef } from '@tanstack/react-table'
 
 import DataTableActions from '@/app/(dashboard)/(products)/components/data-table/data-table-actions'
 import { Product } from '@/app/(dashboard)/(products)/lib/type'
+import { formatDate } from '@/lib/utils'
 
 const SortableHeader = ({
     headerName,
@@ -102,7 +102,7 @@ export const columns: ColumnDef<Product>[] = [
                 />
             )
         },
-        cell: ({ row }) => moment(row.original.createdAt).format('YYYY-MM-DD'),
+        cell: ({ row }) => formatDate(row.original.createdAt),
     },
     {
         accessorKey: 'updatedAt',
@@ -116,7 +116,7 @@ export const columns: ColumnDef<Product>[] = [
                 />
             )
         },
-        cell: ({ row }) => moment(row.original.updatedAt).format('YYYY-MM-DD'),
+        cell: ({ row }) => formatDate(row.original.updatedAt),
     },
     {
         id: 'actions',

@@ -83,7 +83,23 @@ export const fetchProductsByUserId = async (userId: string) => {
         where: { userId: userId },
     })
 
-    revalidatePath('/products')
+    return data
+}
+
+export const fetchProductsByDate = async (
+    userId: string,
+    from: string,
+    to: string
+) => {
+    const data = await prisma.product.findMany({
+        where: {
+            userId: userId,
+            createdAt: {
+                gte: new Date(from),
+                lte: new Date(to),
+            },
+        },
+    })
 
     return data
 }
@@ -102,8 +118,6 @@ export const fetchProductsByProductName = async (
         },
     })
 
-    revalidatePath('/products')
-
     return data
 }
 
@@ -111,8 +125,6 @@ export const fetchProductByProductId = async (productId: string) => {
     const data = await prisma.product.findUnique({
         where: { id: productId },
     })
-
-    revalidatePath('/products')
 
     return data
 }
