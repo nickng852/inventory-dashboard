@@ -87,15 +87,23 @@ export const fetchOrdersByUserId = async (userId: string) => {
         where: { userId: userId },
     })
 
-    revalidatePath('/orders')
-
     return data
 }
 
-export const fetchSummedOrdersByUserId = async (userId: string) => {
+export const fetchOrdersByDate = async (
+    userId: string,
+    from: string,
+    to: string
+) => {
     const data = await prisma.order.groupBy({
         by: ['orderDate'],
-        where: { userId: userId },
+        where: {
+            userId: userId,
+            orderDate: {
+                gte: new Date(from),
+                lte: new Date(to),
+            },
+        },
         _sum: {
             grandTotal: true,
         },
@@ -119,8 +127,6 @@ export const fetchOrderByOrderId = async (orderId: string) => {
             },
         },
     })
-
-    revalidatePath('/orders')
 
     return data
 }

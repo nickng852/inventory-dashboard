@@ -1,3 +1,5 @@
+import { Prisma } from '@prisma/client'
+
 export type Product = {
     id: string
     createdAt: Date
@@ -5,7 +7,7 @@ export type Product = {
     userId: string
     name: string
     description?: string | null | undefined
-    price: string | number
+    price: Prisma.Decimal | string | number
     color?: string | null | undefined
     imageUrl?: string | null | undefined
 }

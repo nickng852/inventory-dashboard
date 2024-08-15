@@ -1,8 +1,10 @@
 'use client'
 import * as React from 'react'
-import { addDays, format } from 'date-fns'
+import { sub, format } from 'date-fns'
+import { useRouter } from 'next/navigation'
 import { DateRange } from 'react-day-picker'
 import { CalendarIcon } from '@radix-ui/react-icons'
+import { PopoverClose } from '@radix-ui/react-popover'
 
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
@@ -11,15 +13,27 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from '@/components/ui/popover'
+import { formatDate } from '@/lib/utils'
 import { cn } from '@/lib/utils'
 
 export function CalendarDateRangePicker({
     className,
 }: React.HTMLAttributes<HTMLDivElement>) {
+    const router = useRouter()
+
     const [date, setDate] = React.useState<DateRange | undefined>({
-        from: new Date(2023, 0, 20),
-        to: addDays(new Date(2023, 0, 20), 20),
+        from: sub(new Date(), { days: 30 }),
+        to: new Date(),
     })
+
+    const apply = () => {
+        const url =
+            date?.from && date?.to
+                ? `${window.location.origin}?from=${formatDate(date.from)}&to=${formatDate(date.to)}`
+                : window.location.origin
+
+        router.push(url)
+    }
 
     return (
         <div className={cn('grid gap-2', className)}>
@@ -57,6 +71,11 @@ export function CalendarDateRangePicker({
                         onSelect={setDate}
                         numberOfMonths={2}
                     />
+                    <div className="flex w-full justify-end p-4">
+                        <PopoverClose asChild>
+                            <Button onClick={apply}>Apply</Button>
+                        </PopoverClose>
+                    </div>
                 </PopoverContent>
             </Popover>
         </div>

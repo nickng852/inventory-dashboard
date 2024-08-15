@@ -1,29 +1,28 @@
+import { sub } from 'date-fns'
 import { auth } from '@clerk/nextjs/server'
-import { ReaderIcon, CubeIcon } from '@radix-ui/react-icons'
 
-import { fetchSummedOrdersByUserId } from '@/app/(dashboard)/(orders)/lib/action'
-import { fetchProductsByUserId } from '@/app/(dashboard)/(products)/lib/action'
-import OverviewCard from '@/components/overview-card'
-import TotalOrdersChart from '@/components/total-orders-chart'
-import TotalRevenueChart from '@/components/total-revenue-chart'
+import { fetchOrdersByDate } from '@/app/(dashboard)/(orders)/lib/action'
+import { fetchProductsByDate } from '@/app/(dashboard)/(products)/lib/action'
+import { CalendarDateRangePicker } from '@/components/date-range-picker'
+import { formatDate } from '@/lib/utils'
 
-export default async function Home() {
+import OverViewContent from './components/overview-content'
+
+type Props = {
+    searchParams?: {
+        from: string
+        to: string
+    }
+}
+
+export default async function Home({ searchParams }: Props) {
     const { userId } = auth()
-    const products = await fetchProductsByUserId(userId ?? '')
-    const orders = await fetchSummedOrdersByUserId(userId ?? '')
 
-    const totalRevenue = orders.reduce((acc, cV) => {
-        return acc + (Number(cV._sum.grandTotal) || 0)
-    }, 0)
+    const from = searchParams?.from ?? formatDate(sub(new Date(), { days: 30 }))
+    const to = searchParams?.to ?? formatDate(new Date())
 
-    const totalOrders = orders.reduce((acc, cV) => {
-        return acc + cV._count
-    }, 0)
-
-    const formattedOrders = orders.map((order) => ({
-        ...order,
-        _sum: { grandTotal: Number(order._sum.grandTotal) || 0 },
-    }))
+    const products = await fetchProductsByDate(userId ?? '', from, to)
+    const orders = await fetchOrdersByDate(userId ?? '', from, to)
 
     if (userId)
         return (
@@ -33,46 +32,11 @@ export default async function Home() {
                         <h2 className="text-2xl font-bold tracking-tight">
                             Overview
                         </h2>
+
+                        <CalendarDateRangePicker />
                     </div>
 
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        <OverviewCard
-                            type="dollar"
-                            cardTitle="Total Revenue"
-                            cardIcon={
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    className="h-4 w-4 text-muted-foreground"
-                                >
-                                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                                </svg>
-                            }
-                            data={totalRevenue}
-                            prefix="$"
-                        />
-                        <OverviewCard
-                            type="number"
-                            cardTitle="Orders"
-                            cardIcon={<ReaderIcon />}
-                            data={totalOrders}
-                        />
-                        <OverviewCard
-                            type="number"
-                            cardTitle="Products"
-                            cardIcon={<CubeIcon />}
-                            data={products.length}
-                        />
-                    </div>
-
-                    <TotalRevenueChart data={formattedOrders} />
-
-                    <TotalOrdersChart data={formattedOrders} />
+                    <OverViewContent products={products} orders={orders} />
                 </div>
             </main>
         )
