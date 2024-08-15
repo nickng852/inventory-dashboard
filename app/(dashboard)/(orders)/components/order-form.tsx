@@ -1,7 +1,6 @@
 'use client'
 import { useEffect } from 'react'
 import { Trash2 } from 'lucide-react'
-import moment from 'moment'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useForm, useFieldArray } from 'react-hook-form'
@@ -41,7 +40,7 @@ import {
     PopoverTrigger,
 } from '@/components/ui/popover'
 import { useToast } from '@/components/ui/use-toast'
-import { cn } from '@/lib/utils'
+import { cn, formatDate } from '@/lib/utils'
 
 export default function OrderForm({
     editMode,
@@ -175,10 +174,8 @@ export default function OrderForm({
                                                         )}
                                                     >
                                                         {field.value ? (
-                                                            moment(
+                                                            formatDate(
                                                                 field.value
-                                                            ).format(
-                                                                'YYYY/MM/DD'
                                                             )
                                                         ) : (
                                                             <span>

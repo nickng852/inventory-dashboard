@@ -1,11 +1,11 @@
 'use client'
-import moment from 'moment'
 import { numericFormatter } from 'react-number-format'
 import { CaretSortIcon } from '@radix-ui/react-icons'
 import { ColumnDef } from '@tanstack/react-table'
 
 import DataTableActions from '@/app/(dashboard)/(orders)/components/data-table/data-table-actions'
 import { Order } from '@/app/(dashboard)/(orders)/lib/type'
+import { formatDate } from '@/lib/utils'
 
 const SortableHeader = ({
     headerName,
@@ -48,7 +48,7 @@ export const columns: ColumnDef<Order>[] = [
                 />
             )
         },
-        cell: ({ row }) => moment(row.original.orderDate).format('YYYY-MM-DD'),
+        cell: ({ row }) => formatDate(row.original.orderDate),
     },
     {
         accessorKey: 'grandTotal',
@@ -80,7 +80,7 @@ export const columns: ColumnDef<Order>[] = [
                 />
             )
         },
-        cell: ({ row }) => moment(row.original.createdAt).format('YYYY-MM-DD'),
+        cell: ({ row }) => formatDate(row.original.createdAt),
     },
     {
         accessorKey: 'updatedAt',
@@ -94,7 +94,7 @@ export const columns: ColumnDef<Order>[] = [
                 />
             )
         },
-        cell: ({ row }) => moment(row.original.updatedAt).format('YYYY-MM-DD'),
+        cell: ({ row }) => formatDate(row.original.updatedAt),
     },
     {
         id: 'actions',
