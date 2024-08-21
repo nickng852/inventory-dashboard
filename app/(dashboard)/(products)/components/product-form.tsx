@@ -31,11 +31,9 @@ import { useToast } from '@/components/ui/use-toast'
 
 export default function ProductForm({
     editMode,
-    userId,
     product,
 }: {
     editMode?: boolean
-    userId: string
     product?: Product
 }) {
     const params = useParams()
@@ -69,7 +67,7 @@ export default function ProductForm({
 
     const create = async (data: FormData) => {
         try {
-            await createProduct(userId, data)
+            await createProduct(data)
             toast({
                 description: 'Product created successfully.',
             })
@@ -78,7 +76,10 @@ export default function ProductForm({
             toast({
                 variant: 'destructive',
                 title: 'Uh oh! Something went wrong.',
-                description: 'There was a problem with your request.',
+                description:
+                    err instanceof Error
+                        ? err.message
+                        : 'An unknown error occurred',
             })
         }
     }
@@ -94,7 +95,10 @@ export default function ProductForm({
             toast({
                 variant: 'destructive',
                 title: 'Uh oh! Something went wrong.',
-                description: 'There was a problem with your request.',
+                description:
+                    err instanceof Error
+                        ? err.message
+                        : 'An unknown error occurred',
             })
         }
     }
