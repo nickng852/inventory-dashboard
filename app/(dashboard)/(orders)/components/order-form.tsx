@@ -7,9 +7,14 @@ import { useForm, useFieldArray } from 'react-hook-form'
 import { NumericFormat, numericFormatter } from 'react-number-format'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ReloadIcon } from '@radix-ui/react-icons'
-import { CaretSortIcon, CheckIcon, PlusIcon } from '@radix-ui/react-icons'
-import { CalendarIcon } from '@radix-ui/react-icons'
+import {
+    ChevronLeftIcon,
+    CalendarIcon,
+    CaretSortIcon,
+    CheckIcon,
+    PlusIcon,
+    ReloadIcon,
+} from '@radix-ui/react-icons'
 
 import { createOrder, editOrder } from '@/app/(dashboard)/(orders)/lib/action'
 import { formSchema } from '@/app/(dashboard)/(orders)/lib/formSchema'
@@ -142,15 +147,24 @@ export default function OrderForm({
 
     return (
         <div className="w-full max-w-5xl space-y-6">
-            <div>
-                <h2 className="text-2xl font-bold tracking-tight">
-                    {editMode ? 'Edit Order' : 'Create a new order'}
-                </h2>
-                <p className="text-muted-foreground">
-                    {editMode
-                        ? 'Edit your order in one-click.'
-                        : 'Fill in the information below to add a new order to your store'}
-                </p>
+            <div className="flex items-center space-x-4">
+                <Link href="/orders">
+                    <Button variant="secondary" size="icon">
+                        <ChevronLeftIcon className="h-4 w-4" />
+                        <span className="sr-only">Back</span>
+                    </Button>
+                </Link>
+
+                <div>
+                    <h2 className="text-2xl font-bold tracking-tight">
+                        {editMode ? 'Edit Order' : 'Create a new order'}
+                    </h2>
+                    <p className="text-muted-foreground">
+                        {editMode
+                            ? 'Edit your order in one-click.'
+                            : 'Fill in the information below to add a new order to your store'}
+                    </p>
+                </div>
             </div>
 
             <div className="rounded-lg border p-4">
