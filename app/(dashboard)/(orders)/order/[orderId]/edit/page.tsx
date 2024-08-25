@@ -18,13 +18,11 @@ export default async function Page({
         notFound()
     }
 
-    if (userId)
-        return (
-            <OrderForm
-                editMode
-                userId={userId}
-                order={JSON.parse(JSON.stringify(order))}
-                products={JSON.parse(JSON.stringify(products))}
-            />
-        )
+    return (
+        <OrderForm
+            editMode
+            order={JSON.parse(JSON.stringify(order))}
+            products={JSON.parse(JSON.stringify(products))}
+        />
+    )
 }

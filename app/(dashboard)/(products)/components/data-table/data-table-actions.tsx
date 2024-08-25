@@ -1,6 +1,7 @@
 import { MoreHorizontal } from 'lucide-react'
 import Link from 'next/link'
 
+import { deleteProduct } from '@/app/(dashboard)/(products)/lib/action'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -20,7 +21,6 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useToast } from '@/components/ui/use-toast'
-import { deleteProduct } from '@/app/(dashboard)/(products)/lib/action'
 
 export default function DataTableActions({ productId }: { productId: string }) {
     const { toast } = useToast()
@@ -36,7 +36,10 @@ export default function DataTableActions({ productId }: { productId: string }) {
             toast({
                 variant: 'destructive',
                 title: 'Uh oh! Something went wrong.',
-                description: 'There was a problem with your request.',
+                description:
+                    err instanceof Error
+                        ? err.message
+                        : 'An unknown error occurred',
             })
         }
     }

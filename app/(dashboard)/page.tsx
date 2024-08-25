@@ -24,20 +24,19 @@ export default async function Home({ searchParams }: Props) {
     const products = await fetchProductsByDate(userId ?? '', from, to)
     const orders = await fetchOrdersByDate(userId ?? '', from, to)
 
-    if (userId)
-        return (
-            <main className="h-full flex-1 flex-col items-center md:flex">
-                <div className="w-full max-w-5xl space-y-6 md:space-y-8">
-                    <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                        <h2 className="text-2xl font-bold tracking-tight">
-                            Overview
-                        </h2>
+    return (
+        <main className="h-full flex-1 flex-col items-center md:flex">
+            <div className="w-full max-w-5xl space-y-6 md:space-y-8">
+                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                    <h2 className="text-2xl font-bold tracking-tight">
+                        Overview
+                    </h2>
 
-                        <CalendarDateRangePicker />
-                    </div>
-
-                    <OverViewContent products={products} orders={orders} />
+                    <CalendarDateRangePicker />
                 </div>
-            </main>
-        )
+
+                <OverViewContent products={products} orders={orders} />
+            </div>
+        </main>
+    )
 }

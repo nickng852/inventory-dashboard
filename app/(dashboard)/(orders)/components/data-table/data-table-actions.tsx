@@ -36,7 +36,10 @@ export default function DataTableActions({ orderId }: { orderId: string }) {
             toast({
                 variant: 'destructive',
                 title: 'Uh oh! Something went wrong.',
-                description: 'There was a problem with your request.',
+                description:
+                    err instanceof Error
+                        ? err.message
+                        : 'An unknown error occurred',
             })
         }
     }

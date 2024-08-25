@@ -44,12 +44,10 @@ import { cn, formatDate } from '@/lib/utils'
 
 export default function OrderForm({
     editMode,
-    userId,
     order,
     products,
 }: {
     editMode?: boolean
-    userId: string
     order?: OrderWithOrderItems
     products: Product[]
 }) {
@@ -88,7 +86,7 @@ export default function OrderForm({
 
     const create = async (data: z.infer<typeof formSchema>) => {
         try {
-            await createOrder(userId, data)
+            await createOrder(data)
             toast({
                 description: 'Order created successfully.',
             })
@@ -97,14 +95,17 @@ export default function OrderForm({
             toast({
                 variant: 'destructive',
                 title: 'Uh oh! Something went wrong.',
-                description: 'There was a problem with your request.',
+                description:
+                    err instanceof Error
+                        ? err.message
+                        : 'An unknown error occurred',
             })
         }
     }
 
     const edit = async (orderId: string, data: z.infer<typeof formSchema>) => {
         try {
-            await editOrder(userId, orderId, data)
+            await editOrder(orderId, data)
             toast({
                 description: 'Order edited successfully.',
             })
@@ -113,7 +114,10 @@ export default function OrderForm({
             toast({
                 variant: 'destructive',
                 title: 'Uh oh! Something went wrong.',
-                description: 'There was a problem with your request.',
+                description:
+                    err instanceof Error
+                        ? err.message
+                        : 'An unknown error occurred',
             })
         }
     }

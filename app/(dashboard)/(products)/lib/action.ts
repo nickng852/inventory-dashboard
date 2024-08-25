@@ -1,17 +1,44 @@
 'use server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { auth } from '@clerk/nextjs/server'
 import { put } from '@vercel/blob'
 
 import { formSchema } from '@/app/(dashboard)/(products)/lib/formSchema'
 import { prisma } from '@/lib/prisma'
 
-export const createProduct = async (userId: string, formData: FormData) => {
+export const createProduct = async (formData: FormData) => {
+    const { userId } = auth()
+
+    if (!userId) {
+        throw new Error('User not authenticated')
+    }
+
     const rawFormData = Object.fromEntries(formData.entries())
 
     // backend validation
     const { name, description, price, color, image } =
         formSchema.parse(rawFormData)
+
+    if (!name) {
+        throw new Error('Name is required')
+    }
+
+    if (!price) {
+        throw new Error('Price is required')
+    }
+
+    if (!color) {
+        throw new Error('Color is required')
+    }
+
+    const existingProduct = await prisma.product.findFirst({
+        where: { name: name },
+    })
+
+    if (existingProduct) {
+        throw new Error('Product already exists')
+    }
 
     let imageUrl: string | undefined = undefined
 
@@ -39,11 +66,49 @@ export const createProduct = async (userId: string, formData: FormData) => {
 }
 
 export const editProduct = async (productId: string, formData: FormData) => {
+    const { userId } = auth()
+
+    if (!userId) {
+        throw new Error('User not authenticated')
+    }
+
     const rawFormData = Object.fromEntries(formData.entries())
 
     // backend validation
     const { name, description, price, color, image } =
         formSchema.parse(rawFormData)
+
+    const product = await prisma.product.findUnique({
+        where: { id: productId },
+    })
+
+    if (!product) {
+        throw new Error('Product not found')
+    }
+
+    if (product.userId !== userId) {
+        throw new Error('You are not authorized to edit this product')
+    }
+
+    if (!name) {
+        throw new Error('Name is required')
+    }
+
+    if (!price) {
+        throw new Error('Price is required')
+    }
+
+    if (!color) {
+        throw new Error('Color is required')
+    }
+
+    const existingProduct = await prisma.product.findFirst({
+        where: { name: name },
+    })
+
+    if (existingProduct) {
+        throw new Error('Product already exists')
+    }
 
     let imageUrl: string | undefined = undefined
 
@@ -71,9 +136,25 @@ export const editProduct = async (productId: string, formData: FormData) => {
 }
 
 export const deleteProduct = async (productId: string) => {
-    await prisma.product.delete({
+    const { userId } = auth()
+
+    if (!userId) {
+        throw new Error('User not authenticated')
+    }
+
+    const product = await prisma.product.findUnique({
         where: { id: productId },
     })
+
+    if (!product) {
+        throw new Error('Product not found')
+    }
+
+    if (product.userId !== userId) {
+        throw new Error('You are not authorized to delete this product')
+    }
+
+    await prisma.product.delete({ where: { id: productId } })
 
     revalidatePath('/products')
 }
