@@ -10,15 +10,15 @@ import { prisma } from '@/lib/prisma'
 export const createProduct = async (formData: FormData) => {
     const { userId } = auth()
 
+    if (!userId) {
+        throw new Error('User not authenticated')
+    }
+
     const rawFormData = Object.fromEntries(formData.entries())
 
     // backend validation
     const { name, description, price, color, image } =
         formSchema.parse(rawFormData)
-
-    if (!userId) {
-        throw new Error('User not authenticated')
-    }
 
     if (!name) {
         throw new Error('Name is required')
@@ -68,6 +68,10 @@ export const createProduct = async (formData: FormData) => {
 export const editProduct = async (productId: string, formData: FormData) => {
     const { userId } = auth()
 
+    if (!userId) {
+        throw new Error('User not authenticated')
+    }
+
     const rawFormData = Object.fromEntries(formData.entries())
 
     // backend validation
@@ -84,6 +88,18 @@ export const editProduct = async (productId: string, formData: FormData) => {
 
     if (product.userId !== userId) {
         throw new Error('You are not authorized to edit this product')
+    }
+
+    if (!name) {
+        throw new Error('Name is required')
+    }
+
+    if (!price) {
+        throw new Error('Price is required')
+    }
+
+    if (!color) {
+        throw new Error('Color is required')
     }
 
     const existingProduct = await prisma.product.findFirst({
@@ -121,6 +137,10 @@ export const editProduct = async (productId: string, formData: FormData) => {
 
 export const deleteProduct = async (productId: string) => {
     const { userId } = auth()
+
+    if (!userId) {
+        throw new Error('User not authenticated')
+    }
 
     const product = await prisma.product.findUnique({
         where: { id: productId },

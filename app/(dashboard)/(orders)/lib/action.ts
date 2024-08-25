@@ -2,16 +2,32 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import * as z from 'zod'
+import { auth } from '@clerk/nextjs/server'
 
 import { formSchema } from '@/app/(dashboard)/(orders)/lib/formSchema'
 import { prisma } from '@/lib/prisma'
 
-export const createOrder = async (
-    userId: string,
-    data: z.infer<typeof formSchema>
-) => {
+export const createOrder = async (data: z.infer<typeof formSchema>) => {
+    const { userId } = auth()
+
+    if (!userId) {
+        throw new Error('User not authenticated')
+    }
+
     // backend validation
     const { orderDate, products, grandTotal } = formSchema.parse(data)
+
+    if (!orderDate) {
+        throw new Error('Order date is required')
+    }
+
+    if (!products) {
+        throw new Error('Products are required')
+    }
+
+    if (!grandTotal) {
+        throw new Error('Grand total is required')
+    }
 
     await prisma.order.create({
         data: {
@@ -36,12 +52,37 @@ export const createOrder = async (
 }
 
 export const editOrder = async (
-    userId: string,
     orderId: string,
     data: z.infer<typeof formSchema>
 ) => {
+    const { userId } = auth()
+
+    if (!userId) {
+        throw new Error('User not authenticated')
+    }
+
+    const order = await prisma.order.findUnique({
+        where: { id: orderId },
+    })
+
+    if (!order) {
+        throw new Error('Order not found')
+    }
+
     // backend validation
     const { orderDate, products, grandTotal } = formSchema.parse(data)
+
+    if (!orderDate) {
+        throw new Error('Order date is required')
+    }
+
+    if (!products) {
+        throw new Error('Products are required')
+    }
+
+    if (!grandTotal) {
+        throw new Error('Grand total is required')
+    }
 
     await prisma.orderItem.deleteMany({
         where: {
@@ -75,6 +116,24 @@ export const editOrder = async (
 }
 
 export const deleteOrder = async (orderId: string) => {
+    const { userId } = auth()
+
+    if (!userId) {
+        throw new Error('User not authenticated')
+    }
+
+    const order = await prisma.order.findUnique({
+        where: { id: orderId },
+    })
+
+    if (!order) {
+        throw new Error('Order not found')
+    }
+
+    if (order.userId !== userId) {
+        throw new Error('You are not authorized to delete this order')
+    }
+
     await prisma.order.delete({
         where: { id: orderId },
     })
