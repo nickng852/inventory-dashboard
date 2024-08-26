@@ -1,5 +1,4 @@
 'use client'
-import { useEffect } from 'react'
 import { Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
@@ -17,7 +16,10 @@ import {
 } from '@radix-ui/react-icons'
 
 import { createOrder, editOrder } from '@/app/(dashboard)/(orders)/lib/action'
-import { formSchema } from '@/app/(dashboard)/(orders)/lib/formSchema'
+import {
+    formSchema,
+    formSchemaWithGrandTotal,
+} from '@/app/(dashboard)/(orders)/lib/formSchema'
 import { OrderWithOrderItems } from '@/app/(dashboard)/(orders)/lib/type'
 import { Product } from '@/app/(dashboard)/(products)/lib/type'
 import { Button, buttonVariants } from '@/components/ui/button'
@@ -74,7 +76,6 @@ export default function OrderForm({
                       quantity: item.quantity.toString(),
                   }))
                 : [initialFieldArrayObj],
-            grandTotal: order ? order?.grandTotal : 0,
         },
     })
 
@@ -85,11 +86,32 @@ export default function OrderForm({
 
     const orderItems = form.watch('products')
 
-    const onSubmit = (data: z.infer<typeof formSchema>) => {
-        return editMode ? edit(params.orderId as string, data) : create(data)
+    const getUnitPrice = (productId: string) => {
+        const match = products.find((product) => product.id === productId)
+        return match ? Number(match.price) : 0
     }
 
-    const create = async (data: z.infer<typeof formSchema>) => {
+    const getTotalPrice = (productId: string, quantity: number) => {
+        const unitPrice = getUnitPrice(productId)
+        return unitPrice * quantity
+    }
+
+    const grandTotal = orderItems.reduce((acc, cV) => {
+        return (acc += getUnitPrice(cV.id) * Number(cV.quantity))
+    }, 0)
+
+    const onSubmit = (data: z.infer<typeof formSchema>) => {
+        const updatedData = {
+            ...data,
+            grandTotal: grandTotal,
+        }
+
+        return editMode
+            ? edit(params.orderId as string, updatedData)
+            : create(updatedData)
+    }
+
+    const create = async (data: z.infer<typeof formSchemaWithGrandTotal>) => {
         try {
             await createOrder(data)
             toast({
@@ -108,7 +130,10 @@ export default function OrderForm({
         }
     }
 
-    const edit = async (orderId: string, data: z.infer<typeof formSchema>) => {
+    const edit = async (
+        orderId: string,
+        data: z.infer<typeof formSchemaWithGrandTotal>
+    ) => {
         try {
             await editOrder(orderId, data)
             toast({
@@ -127,29 +152,11 @@ export default function OrderForm({
         }
     }
 
-    const getUnitPrice = (productId: string) => {
-        const match = products.find((product) => product.id === productId)
-        return match ? Number(match.price) : 0
-    }
-
-    const getTotalPrice = (productId: string, quantity: number) => {
-        const unitPrice = getUnitPrice(productId)
-        return unitPrice * quantity
-    }
-
-    const grandTotal = orderItems.reduce((acc, cV) => {
-        return (acc += getUnitPrice(cV.id) * Number(cV.quantity))
-    }, 0)
-
-    useEffect(() => {
-        form.setValue('grandTotal', grandTotal)
-    }, [form, grandTotal])
-
     return (
         <div className="w-full max-w-5xl space-y-6">
             <div className="flex items-center space-x-4">
                 <Link href="/orders">
-                    <Button variant="secondary" size="icon">
+                    <Button variant="outline" size="icon">
                         <ChevronLeftIcon className="h-4 w-4" />
                         <span className="sr-only">Back</span>
                     </Button>
@@ -444,28 +451,20 @@ export default function OrderForm({
                             </Button>
 
                             <div className="flex w-full justify-end">
-                                <FormField
-                                    control={form.control}
-                                    name="grandTotal"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Grand Total:</FormLabel>
-                                            <FormControl>
-                                                <div className="text-right">
-                                                    {numericFormatter(
-                                                        field.value.toString(),
-                                                        {
-                                                            prefix: '$',
-                                                            thousandSeparator:
-                                                                true,
-                                                        }
-                                                    )}
-                                                </div>
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                                <FormItem>
+                                    <FormLabel>Grand Total:</FormLabel>
+                                    <FormControl>
+                                        <div className="text-right">
+                                            {numericFormatter(
+                                                grandTotal.toString(),
+                                                {
+                                                    prefix: '$',
+                                                    thousandSeparator: true,
+                                                }
+                                            )}
+                                        </div>
+                                    </FormControl>
+                                </FormItem>
                             </div>
                         </div>
 
@@ -478,7 +477,10 @@ export default function OrderForm({
                         <Button
                             type="submit"
                             className="w-full md:w-auto"
-                            disabled={form.formState.isSubmitting}
+                            disabled={
+                                !form.formState.isDirty ||
+                                form.formState.isSubmitting
+                            }
                         >
                             {form.formState.isSubmitting && (
                                 <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
