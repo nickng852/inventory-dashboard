@@ -149,7 +149,7 @@ export default function OrderForm({
         <div className="w-full max-w-5xl space-y-6">
             <div className="flex items-center space-x-4">
                 <Link href="/orders">
-                    <Button variant="secondary" size="icon">
+                    <Button variant="outline" size="icon">
                         <ChevronLeftIcon className="h-4 w-4" />
                         <span className="sr-only">Back</span>
                     </Button>
@@ -478,7 +478,10 @@ export default function OrderForm({
                         <Button
                             type="submit"
                             className="w-full md:w-auto"
-                            disabled={form.formState.isSubmitting}
+                            disabled={
+                                !form.formState.isDirty ||
+                                form.formState.isSubmitting
+                            }
                         >
                             {form.formState.isSubmitting && (
                                 <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
