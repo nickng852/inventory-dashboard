@@ -11,5 +11,8 @@ export const formSchema = z.object({
         })
         .array()
         .min(1, { message: 'At least one product in an order' }),
+})
+
+export const formSchemaWithGrandTotal = formSchema.extend({
     grandTotal: z.number(),
 })

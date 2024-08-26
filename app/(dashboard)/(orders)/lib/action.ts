@@ -4,10 +4,12 @@ import { redirect } from 'next/navigation'
 import * as z from 'zod'
 import { auth } from '@clerk/nextjs/server'
 
-import { formSchema } from '@/app/(dashboard)/(orders)/lib/formSchema'
+import { formSchemaWithGrandTotal } from '@/app/(dashboard)/(orders)/lib/formSchema'
 import { prisma } from '@/lib/prisma'
 
-export const createOrder = async (data: z.infer<typeof formSchema>) => {
+export const createOrder = async (
+    data: z.infer<typeof formSchemaWithGrandTotal>
+) => {
     const { userId } = auth()
 
     if (!userId) {
@@ -15,7 +17,8 @@ export const createOrder = async (data: z.infer<typeof formSchema>) => {
     }
 
     // backend validation
-    const { orderDate, products, grandTotal } = formSchema.parse(data)
+    const { orderDate, products, grandTotal } =
+        formSchemaWithGrandTotal.parse(data)
 
     if (!orderDate) {
         throw new Error('Order date is required')
@@ -53,7 +56,7 @@ export const createOrder = async (data: z.infer<typeof formSchema>) => {
 
 export const editOrder = async (
     orderId: string,
-    data: z.infer<typeof formSchema>
+    data: z.infer<typeof formSchemaWithGrandTotal>
 ) => {
     const { userId } = auth()
 
@@ -70,7 +73,8 @@ export const editOrder = async (
     }
 
     // backend validation
-    const { orderDate, products, grandTotal } = formSchema.parse(data)
+    const { orderDate, products, grandTotal } =
+        formSchemaWithGrandTotal.parse(data)
 
     if (!orderDate) {
         throw new Error('Order date is required')
