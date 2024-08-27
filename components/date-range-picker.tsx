@@ -1,7 +1,7 @@
 'use client'
 import * as React from 'react'
 import { sub, format } from 'date-fns'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { DateRange } from 'react-day-picker'
 import { CalendarIcon } from '@radix-ui/react-icons'
 import { PopoverClose } from '@radix-ui/react-popover'
@@ -21,9 +21,15 @@ export function CalendarDateRangePicker({
 }: React.HTMLAttributes<HTMLDivElement>) {
     const router = useRouter()
 
+    const searchParams = useSearchParams()
+
+    const urlFrom = searchParams.get('from')
+    const urlTo = searchParams.get('to')
+
+    // date are not using url one
     const [date, setDate] = React.useState<DateRange | undefined>({
-        from: sub(new Date(), { days: 30 }),
-        to: new Date(),
+        from: urlFrom ? new Date(urlFrom) : sub(new Date(), { days: 30 }),
+        to: urlTo ? new Date(urlTo) : new Date(),
     })
 
     const apply = () => {
