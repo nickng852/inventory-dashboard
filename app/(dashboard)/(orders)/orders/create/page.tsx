@@ -5,7 +5,7 @@ import { fetchProductsByUserId } from '@/app/(dashboard)/(products)/lib/action'
 
 export default async function Page() {
     const { userId } = auth()
-    const data = await fetchProductsByUserId(userId ?? '')
+    const data = await fetchProductsByUserId(userId as string)
 
     return (
         <main>

@@ -12,7 +12,7 @@ export default async function Page({
 }) {
     const { userId } = auth()
     const order = await fetchOrderByOrderId(params.orderId)
-    const products = await fetchProductsByUserId(userId ?? '')
+    const products = await fetchProductsByUserId(userId as string)
 
     if (!order) {
         notFound()
