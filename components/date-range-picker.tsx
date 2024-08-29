@@ -1,7 +1,7 @@
 'use client'
 import * as React from 'react'
 import { sub, format } from 'date-fns'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { DateRange } from 'react-day-picker'
 import { CalendarIcon } from '@radix-ui/react-icons'
 import { PopoverClose } from '@radix-ui/react-popover'
@@ -21,10 +21,25 @@ export function CalendarDateRangePicker({
 }: React.HTMLAttributes<HTMLDivElement>) {
     const router = useRouter()
 
-    const [date, setDate] = React.useState<DateRange | undefined>({
+    const searchParams = useSearchParams()
+
+    const urlFrom = searchParams.get('from')
+    const urlTo = searchParams.get('to')
+
+    const defaultDate = {
         from: sub(new Date(), { days: 30 }),
         to: new Date(),
+    }
+
+    // date are not using url one
+    const [date, setDate] = React.useState<DateRange | undefined>({
+        from: urlFrom ? new Date(urlFrom) : defaultDate.from,
+        to: urlTo ? new Date(urlTo) : defaultDate.to,
     })
+
+    const reset = () => {
+        setDate(defaultDate)
+    }
 
     const apply = () => {
         const url =
@@ -71,7 +86,11 @@ export function CalendarDateRangePicker({
                         onSelect={setDate}
                         numberOfMonths={2}
                     />
-                    <div className="flex w-full justify-end p-4">
+                    <div className="flex w-full justify-end space-x-2 p-4">
+                        <Button variant="outline" onClick={reset}>
+                            Reset
+                        </Button>
+
                         <PopoverClose asChild>
                             <Button onClick={apply}>Apply</Button>
                         </PopoverClose>

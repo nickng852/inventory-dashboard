@@ -1,12 +1,15 @@
+import { Suspense } from 'react'
 import { sub } from 'date-fns'
 import { auth } from '@clerk/nextjs/server'
 
-import { fetchOrdersByDate } from '@/app/(dashboard)/(orders)/lib/action'
-import { fetchProductsByDate } from '@/app/(dashboard)/(products)/lib/action'
+import CardWrapper from '@/app/(dashboard)/components/cards'
+import ChartWrapper from '@/app/(dashboard)/components/charts'
+import {
+    CardsSkeleton,
+    ChartsSkeleton,
+} from '@/app/(dashboard)/components/skeletons'
 import { CalendarDateRangePicker } from '@/components/date-range-picker'
 import { formatDate } from '@/lib/utils'
-
-import OverViewContent from './components/overview-content'
 
 type Props = {
     searchParams?: {
@@ -21,9 +24,6 @@ export default async function Home({ searchParams }: Props) {
     const from = searchParams?.from ?? formatDate(sub(new Date(), { days: 30 }))
     const to = searchParams?.to ?? formatDate(new Date())
 
-    const products = await fetchProductsByDate(userId ?? '', from, to)
-    const orders = await fetchOrdersByDate(userId ?? '', from, to)
-
     return (
         <main className="h-full flex-1 flex-col items-center md:flex">
             <div className="w-full max-w-5xl space-y-6 md:space-y-8">
@@ -35,7 +35,21 @@ export default async function Home({ searchParams }: Props) {
                     <CalendarDateRangePicker />
                 </div>
 
-                <OverViewContent products={products} orders={orders} />
+                <Suspense fallback={<CardsSkeleton />}>
+                    <CardWrapper
+                        userId={userId as string}
+                        from={from}
+                        to={to}
+                    />
+                </Suspense>
+
+                <Suspense fallback={<ChartsSkeleton />}>
+                    <ChartWrapper
+                        userId={userId as string}
+                        from={from}
+                        to={to}
+                    />
+                </Suspense>
             </div>
         </main>
     )
