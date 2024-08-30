@@ -1,8 +1,10 @@
+import { Suspense } from 'react'
 import Link from 'next/link'
 import { auth } from '@clerk/nextjs/server'
 import { PlusIcon } from '@radix-ui/react-icons'
 
 import OrderList from '@/app/(dashboard)/(orders)/components/order-list'
+import { TableSkeleton } from '@/app/(dashboard)/(orders)/orders/components/skeletons'
 import { Button } from '@/components/ui/button'
 
 export default function Home() {
@@ -29,7 +31,9 @@ export default function Home() {
                     </Link>
                 </div>
 
-                <OrderList userId={userId as string} />
+                <Suspense fallback={<TableSkeleton />}>
+                    <OrderList userId={userId as string} />
+                </Suspense>
             </div>
         </main>
     )

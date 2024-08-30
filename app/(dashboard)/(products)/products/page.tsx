@@ -1,9 +1,12 @@
+import { Suspense } from 'react'
 import Link from 'next/link'
 import { auth } from '@clerk/nextjs/server'
 import { PlusIcon } from '@radix-ui/react-icons'
 
 import ProductList from '@/app/(dashboard)/(products)/components/product-list'
 import { Button } from '@/components/ui/button'
+
+import { TableSkeleton } from './components/skeletons'
 
 export default function Home({
     searchParams,
@@ -33,10 +36,12 @@ export default function Home({
                     </Link>
                 </div>
 
-                <ProductList
-                    searchParams={searchParams}
-                    userId={userId as string}
-                />
+                <Suspense fallback={<TableSkeleton />}>
+                    <ProductList
+                        searchParams={searchParams}
+                        userId={userId as string}
+                    />
+                </Suspense>
             </div>
         </main>
     )
