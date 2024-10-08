@@ -1,4 +1,5 @@
 'use client'
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { HamburgerMenuIcon } from '@radix-ui/react-icons'
@@ -16,6 +17,7 @@ import {
 
 export default function MobileMenu() {
     const pathname = usePathname()
+    const [active, setActive] = useState(pathname)
 
     return (
         <Sheet>
@@ -29,16 +31,19 @@ export default function MobileMenu() {
                 <SheetHeader>
                     <SheetDescription>
                         <div className="mt-10 flex flex-col gap-2">
-                            {navItems.map((navItem, index) => (
+                            {navItems.map((navItem) => (
                                 <Link key={navItem.id} href={navItem.href}>
                                     <SheetClose asChild>
                                         <Button
                                             variant={
-                                                pathname === navItem.href
+                                                active === navItem.href
                                                     ? 'secondary'
                                                     : 'ghost'
                                             }
                                             className="w-full justify-start"
+                                            onClick={() =>
+                                                setActive(navItem.href)
+                                            }
                                         >
                                             {
                                                 <navItem.icon className="mr-2 h-4 w-4" />
