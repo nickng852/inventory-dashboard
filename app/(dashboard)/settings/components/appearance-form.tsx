@@ -4,6 +4,10 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 
+import {
+    appearanceFormSchema,
+    AppearanceFormValues,
+} from '@/app/(dashboard)/settings/lib/appearanceFormSchema'
 import { Button } from '@/components/ui/button'
 import {
     Form,
@@ -15,14 +19,6 @@ import {
     FormMessage,
 } from '@/components/ui/form'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-
-const appearanceFormSchema = z.object({
-    theme: z.enum(['light', 'dark', 'system'], {
-        required_error: 'Please select a theme.',
-    }),
-})
-
-type AppearanceFormValues = z.infer<typeof appearanceFormSchema>
 
 const LightTheme = () => {
     return (
@@ -86,17 +82,7 @@ export function AppearanceForm() {
     })
 
     function onSubmit(data: AppearanceFormValues) {
-        switch (data.theme) {
-            case 'light':
-                setTheme('light')
-                break
-            case 'dark':
-                setTheme('dark')
-                break
-            case 'system':
-                setTheme('system')
-                break
-        }
+        setTheme(data.theme)
     }
 
     return (
